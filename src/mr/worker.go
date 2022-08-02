@@ -1,10 +1,15 @@
 package mr
 
-import "fmt"
-import "log"
-import "net/rpc"
-import "hash/fnv"
-
+import (
+	"encoding/json"
+	"fmt"
+	"hash/fnv"
+	"log"
+	"net/rpc"
+	"os"
+	"path/filepath"
+	"time"
+)
 
 //
 // Map functions return a slice of KeyValue.
@@ -13,6 +18,14 @@ type KeyValue struct {
 	Key   string
 	Value string
 }
+
+// for sorting by key.
+type ByKey []KeyValue
+
+// for sorting by key.
+func (a ByKey) Len() int           { return len(a) }
+func (a ByKey) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
+func (a ByKey) Less(i, j int) bool { return a[i].Key < a[j].Key }
 
 //
 // use ihash(key) % NReduce to choose the reduce
@@ -23,7 +36,6 @@ func ihash(key string) int {
 	h.Write([]byte(key))
 	return int(h.Sum32() & 0x7fffffff)
 }
-
 
 //
 // main/mrworker.go calls this function.
@@ -36,6 +48,58 @@ func Worker(mapf func(string, string) []KeyValue,
 	// uncomment to send the Example RPC to the coordinator.
 	// CallExample()
 
+	for {
+		// make rpc , wait for reply
+		CallGetTask(mapf, reducef)
+		time.Sleep(time.Second * 3)
+	}
+
+}
+
+func callMap(response *Response, mapf func(string, string) []KeyValue) {
+	data, e := os.ReadFile(response.Filename)
+	if e != nil {
+		fmt.Println("error in reading file", e)
+		return
+	}
+
+	kva := mapf(response.Filename, string(data))
+
+	// now store them in nReduce buckets
+	nReduce := response.N_Reduce
+
+	buckets := make([][]KeyValue, 10)
+
+	// distributing key values in buckets
+	for _, kv := range kva {
+		bucket := ihash(kv.Key) % nReduce
+		buckets[bucket] = append(buckets[bucket], kv)
+	}
+
+	// writing buckets to intermiediate files
+	intermediate_files := make([]string, nReduce)
+	for i, bucket := range buckets {
+		// sort.Sort(ByKey(bucket))
+		intermediate_file_name := "mr-%d-%d.json"
+		output_file_name := fmt.Sprintf(intermediate_file_name, ihash(response.Filename), i)
+		output_file, e := os.Create(filepath.Join("mr-tmp", output_file_name))
+		if e != nil {
+			fmt.Println("Crashed while writing")
+			return
+		}
+		enc := json.NewEncoder(output_file)
+
+		for _, kv := range bucket {
+			enc.Encode(kv)
+		}
+
+		intermediate_files = append(intermediate_files, intermediate_file_name)
+		output_file.Close()
+	}
+
+	// after task is successful make a RPC call to post result
+	CallPostResult(&intermediate_files, true, false)
+
 }
 
 //
@@ -43,6 +107,45 @@ func Worker(mapf func(string, string) []KeyValue,
 //
 // the RPC argument and reply types are defined in rpc.go.
 //
+
+func CallPostResult(intermiediate_files *[]string, isMap bool, isReduce bool) {
+	request := TaskResult{}
+	response := Response{}
+
+	request.Intermediate_Files = *intermiediate_files
+	request.Success = true
+	request.IsMap = isMap
+	request.IsReduce = isReduce
+
+	ok := call("Coordinator.PostResult", &request, &response)
+
+	if !ok {
+		fmt.Println("GetTask RPC recieved no response.")
+	} else {
+		// callReduce(response, reducef)
+		fmt.Println("Result posted.")
+	}
+}
+
+func CallGetTask(mapf func(string, string) []KeyValue,
+	reducef func(string, []string) string) {
+
+	request := TaskRequest{Ready: true}
+	response := Response{}
+
+	ok := call("Coordinator.GetTask", &request, &response)
+
+	if !ok {
+		fmt.Println("GetTask RPC recieved no response.")
+	} else if response.Is_Map {
+		// read file
+		callMap(&response, mapf)
+	} else {
+		// callReduce(response, reducef)
+		fmt.Println("Reduce time")
+	}
+
+}
 func CallExample() {
 
 	// declare an argument structure.
