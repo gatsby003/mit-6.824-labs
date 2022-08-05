@@ -44,3 +44,8 @@ type WorkerStatus struct {
 	active        bool
 	time_assigned time.Time
 }
+
+type Status struct {
+	mu              sync.Mutex
+	initateTearDown bool
+}

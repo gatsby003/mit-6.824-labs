@@ -19,7 +19,7 @@ type Coordinator struct {
 	mapJobs            int
 	mapphaseover       bool
 	reducephaseover    bool
-	mapreduceover      chan bool
+	mapreduceover      Status
 }
 
 func initiateCoordinator(mapJobs int, reduceJobs int) *Coordinator {
@@ -30,7 +30,9 @@ func initiateCoordinator(mapJobs int, reduceJobs int) *Coordinator {
 	c.taskQueue = TaskQueue{queue: make([]Task, 0)}
 	c.reduceJobs = reduceJobs
 	c.mapJobs = mapJobs
-	c.mapreduceover = make(chan bool)
+	c.mapreduceover = Status{
+		initateTearDown: false,
+	}
 	c.intermediate_files = IntermediateFiles{files: make([][]string, 10)}
 	return &c
 }
@@ -151,24 +153,33 @@ func (c *Coordinator) server() {
 // if the entire job has finished.
 //
 func (c *Coordinator) Done() bool {
-	c.workers.mu.Lock()
-	// first run status check
-	if len(c.workers.activeworkers) == 0 {
-		c.workers.mu.Unlock()
-		return false
-	}
-	for _, worker := range c.workers.activeworkers {
-		lapsed := time.Since(worker.time_assigned)
-		if lapsed.Seconds() < 10 && worker.active {
+	var justdoit bool
+	c.mapreduceover.mu.Lock()
+	justdoit = c.mapreduceover.initateTearDown
+	c.mapreduceover.mu.Unlock()
+	if justdoit {
+		c.workers.mu.Lock()
+		// first run status check
+		if len(c.workers.activeworkers) == 0 {
 			c.workers.mu.Unlock()
 			return false
-		} else {
-			worker.active = false
 		}
+		for _, worker := range c.workers.activeworkers {
+			lapsed := time.Since(worker.time_assigned)
+			if lapsed.Seconds() < 10 && worker.active {
+				c.workers.mu.Unlock()
+				return false
+			} else {
+				worker.active = false
+			}
+		}
+
+		c.workers.mu.Unlock()
+		return true
+	} else {
+		return false
 	}
 
-	c.workers.mu.Unlock()
-	return true
 }
 
 //
@@ -246,7 +257,9 @@ func Scheduler(c *Coordinator) {
 
 			if !c.reducephaseover {
 				c.reducephaseover = true
-
+				c.mapreduceover.mu.Lock()
+				c.mapreduceover.initateTearDown = true
+				c.mapreduceover.mu.Unlock()
 				pseudo_task := Task{
 					is_pseudo: true,
 				}
