@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"hash/fnv"
 	"io"
+	"io/ioutil"
 	"log"
 	"net/rpc"
 	"os"
@@ -61,7 +62,6 @@ func Worker(mapf func(string, string) []KeyValue,
 		time.Sleep(time.Second * 3)
 	}
 	fmt.Println("Exiting")
-
 }
 
 func callReduce(response *Response, reducef func(string, []string) string) {
@@ -81,8 +81,7 @@ func callReduce(response *Response, reducef func(string, []string) string) {
 			if err := d.Decode(&v); err == io.EOF {
 				break // done decoding file
 			} else if err != nil {
-				fmt.
-					Println("Intermediate file reading error.")
+				fmt.Println("Intermediate file reading error.")
 			}
 
 			if _, ok := key_values_map[v.Key]; ok {
@@ -105,17 +104,21 @@ func callReduce(response *Response, reducef func(string, []string) string) {
 	}
 	sort.Sort(ByKey(result))
 
-	// write result to your file
-
-	// got key : [1, 1, 1, 1, 1] -> values
 	output_file_name := fmt.Sprintf("mr-out-%d", response.Reduce_Task_Number)
-	output_file, e := os.Create(filepath.Join(output_file_name))
-	if e != nil {
-		fmt.Println("Crashed while writing")
-		return
+	output_file_path := filepath.Join(output_file_name)
+
+	// discard if output file already exists
+	if _, err := os.Stat(output_file_path); err == nil {
+		os.Remove(output_file_name)
 	}
 
-	w := bufio.NewWriter(output_file)
+	// create tmp file
+	tmpFile, err := ioutil.TempFile("", "*_mr-reduce")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	w := bufio.NewWriter(tmpFile)
 
 	for _, v := range result {
 		w.WriteString(v.Key + " " + v.Value + "\n")
@@ -123,14 +126,17 @@ func callReduce(response *Response, reducef func(string, []string) string) {
 
 	w.Flush()
 
-	output_file.Close()
+	// move tmp file to permanent file
+	os.Rename(tmpFile.Name(), filepath.Join(output_file_name))
+
+	// close it
+	tmpFile.Close()
 
 	PostReduceResult(output_file_name, response.Reduce_Task_Number)
 
 }
 
 func callMap(response *Response, mapf func(string, string) []KeyValue) {
-	fmt.Println("nReduce", response.N_Reduce)
 	data, e := os.ReadFile(response.Filename)
 	if e != nil {
 		fmt.Println("error in reading file", e)
@@ -156,19 +162,32 @@ func callMap(response *Response, mapf func(string, string) []KeyValue) {
 		// sort.Sort(ByKey(bucket))
 		intermediate_file_name := "mr-%d-%d.json"
 		output_file_name := fmt.Sprintf(intermediate_file_name, response.Map_Task_Number, i)
-		output_file, e := os.Create(filepath.Join(output_file_name))
+		output_file_path := filepath.Join(output_file_name)
+
+		// discard if output file already exists
+		if _, err := os.Stat(output_file_path); err == nil {
+			os.Remove(output_file_name)
+		}
+
+		tmpFile, err := ioutil.TempFile("", "*_mr-map.json")
+		if err != nil {
+			log.Fatal(err)
+		}
+
 		if e != nil {
 			fmt.Println("Crashed while writing")
 			return
 		}
-		enc := json.NewEncoder(output_file)
+		enc := json.NewEncoder(tmpFile)
 
 		for _, kv := range bucket {
 			enc.Encode(kv)
 		}
 
-		intermediate_files = append(intermediate_files, output_file_name)
-		output_file.Close()
+		os.Rename(tmpFile.Name(), output_file_path)
+		tmpFile.Close()
+
+		intermediate_files = append(intermediate_files, output_file_path)
 	}
 
 	// after task is successful make a RPC call to post result

@@ -17,6 +17,7 @@ type Task struct {
 	n_reduce           int
 	is_assigned        bool
 	is_finished        bool
+	present_in_queue   bool
 }
 
 type TaskTable struct {
@@ -25,7 +26,7 @@ type TaskTable struct {
 }
 
 type WorkerTable struct {
-	activeworkers map[string]bool
+	activeworkers map[string]*WorkerStatus
 	mu            sync.Mutex
 }
 
@@ -37,4 +38,9 @@ type TaskQueue struct {
 type IntermediateFiles struct {
 	files [][]string
 	mu    sync.Mutex
+}
+
+type WorkerStatus struct {
+	active        bool
+	time_assigned time.Time
 }
