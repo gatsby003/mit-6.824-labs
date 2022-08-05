@@ -48,25 +48,20 @@ func initiateCoordinator(mapJobs int, reduceJobs int) *Coordinator {
 
 func (c *Coordinator) GetTask(request *TaskRequest, response *Response) error {
 	// check task queue or fail
-	fmt.Println("Get task called")
 	c.taskQueue.mu.Lock()
 	if len(c.taskQueue.queue) != 0 {
-		fmt.Println("Inside Get Task")
 		c.workers.mu.Lock()
 		worker_id := request.WorkerID
 		response.TaskAlloted = true
 		// deque a task
 		task := c.taskQueue.queue[0]
-		fmt.Println(task.is_pseudo)
 		if task.is_pseudo {
 			worker, exists := c.workers.activeworkers[worker_id]
 			if exists {
 				worker.active = false
 			}
-			fmt.Println("Worker Deactivate", worker_id)
 			response.PleaseExit = true
 		} else {
-			fmt.Println("assigning task")
 			c.workers.activeworkers[worker_id] = &WorkerStatus{
 				active:        true,
 				time_assigned: time.Now(),
@@ -164,7 +159,6 @@ func (c *Coordinator) Done() bool {
 	}
 	for _, worker := range c.workers.activeworkers {
 		lapsed := time.Since(worker.time_assigned)
-		fmt.Println(lapsed.Seconds(), worker.active)
 		if lapsed.Seconds() < 10 && worker.active {
 			c.workers.mu.Unlock()
 			return false
@@ -243,7 +237,6 @@ func Scheduler(c *Coordinator) {
 		c.taskTable.mu.Unlock()
 		if len(unassigned_tasks) > 0 {
 			c.taskQueue.mu.Lock()
-			fmt.Println("Loading tasks in task queue")
 			c.taskQueue.queue = append(c.taskQueue.queue, unassigned_tasks...)
 			c.taskQueue.mu.Unlock()
 		}
@@ -253,7 +246,6 @@ func Scheduler(c *Coordinator) {
 
 			if !c.reducephaseover {
 				c.reducephaseover = true
-				fmt.Println("Map and reduce phase done", done_maps, done_reduces)
 
 				pseudo_task := Task{
 					is_pseudo: true,
