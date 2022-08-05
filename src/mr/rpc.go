@@ -26,19 +26,25 @@ type ExampleReply struct {
 
 // Add your RPC definitions here.
 type TaskRequest struct {
-	Ready bool
+	Ready    bool
+	WorkerID string
 }
 
 type TaskResult struct {
 	Success            bool
+	Map_Task_Number    int
+	Reduce_Task_Number int
 	Intermediate_Files []string
+	Final_Output       string
 	IsMap              bool
 	IsReduce           bool
 }
 
 type Response struct {
+	PleaseExit         bool
 	TaskAlloted        bool
 	Filename           string
+	IntermediateFiles  []string
 	Is_Map             bool
 	Is_Reduce          bool
 	N_Reduce           int

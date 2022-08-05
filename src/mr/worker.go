@@ -1,13 +1,17 @@
 package mr
 
 import (
+	"bufio"
 	"encoding/json"
 	"fmt"
 	"hash/fnv"
+	"io"
 	"log"
 	"net/rpc"
 	"os"
 	"path/filepath"
+	"sort"
+	"strconv"
 	"time"
 )
 
@@ -50,13 +54,83 @@ func Worker(mapf func(string, string) []KeyValue,
 
 	for {
 		// make rpc , wait for reply
-		CallGetTask(mapf, reducef)
+		exit := CallGetTask(mapf, reducef)
+		if exit {
+			break
+		}
 		time.Sleep(time.Second * 3)
 	}
+	fmt.Println("Exiting")
+
+}
+
+func callReduce(response *Response, reducef func(string, []string) string) {
+	files := response.IntermediateFiles
+	key_values_map := make(map[string][]string, 0)
+
+	for _, file := range files {
+		fname := filepath.Join(file)
+		f, err := os.Open(fname)
+		if err != nil {
+			fmt.Errorf("Error hundi si")
+		}
+		// decode json to key : value list
+		d := json.NewDecoder(f)
+		for {
+			var v KeyValue
+			if err := d.Decode(&v); err == io.EOF {
+				break // done decoding file
+			} else if err != nil {
+				fmt.
+					Println("Intermediate file reading error.")
+			}
+
+			if _, ok := key_values_map[v.Key]; ok {
+				key_values_map[v.Key] = append(key_values_map[v.Key], v.Value)
+			} else {
+				key_values_map[v.Key] = make([]string, 0)
+				key_values_map[v.Key] = append(key_values_map[v.Key], v.Value)
+			}
+
+		}
+	}
+
+	result := make([]KeyValue, 0)
+	for k, v := range key_values_map {
+		count := reducef(k, v)
+		result = append(result, KeyValue{
+			Key:   k,
+			Value: count,
+		})
+	}
+	sort.Sort(ByKey(result))
+
+	// write result to your file
+
+	// got key : [1, 1, 1, 1, 1] -> values
+	output_file_name := fmt.Sprintf("mr-out-%d", response.Reduce_Task_Number)
+	output_file, e := os.Create(filepath.Join(output_file_name))
+	if e != nil {
+		fmt.Println("Crashed while writing")
+		return
+	}
+
+	w := bufio.NewWriter(output_file)
+
+	for _, v := range result {
+		w.WriteString(v.Key + " " + v.Value + "\n")
+	}
+
+	w.Flush()
+
+	output_file.Close()
+
+	PostReduceResult(output_file_name, response.Reduce_Task_Number)
 
 }
 
 func callMap(response *Response, mapf func(string, string) []KeyValue) {
+	fmt.Println("nReduce", response.N_Reduce)
 	data, e := os.ReadFile(response.Filename)
 	if e != nil {
 		fmt.Println("error in reading file", e)
@@ -77,12 +151,12 @@ func callMap(response *Response, mapf func(string, string) []KeyValue) {
 	}
 
 	// writing buckets to intermiediate files
-	intermediate_files := make([]string, nReduce)
+	intermediate_files := make([]string, 0)
 	for i, bucket := range buckets {
 		// sort.Sort(ByKey(bucket))
 		intermediate_file_name := "mr-%d-%d.json"
-		output_file_name := fmt.Sprintf(intermediate_file_name, ihash(response.Filename), i)
-		output_file, e := os.Create(filepath.Join("mr-tmp", output_file_name))
+		output_file_name := fmt.Sprintf(intermediate_file_name, response.Map_Task_Number, i)
+		output_file, e := os.Create(filepath.Join(output_file_name))
 		if e != nil {
 			fmt.Println("Crashed while writing")
 			return
@@ -93,12 +167,12 @@ func callMap(response *Response, mapf func(string, string) []KeyValue) {
 			enc.Encode(kv)
 		}
 
-		intermediate_files = append(intermediate_files, intermediate_file_name)
+		intermediate_files = append(intermediate_files, output_file_name)
 		output_file.Close()
 	}
 
 	// after task is successful make a RPC call to post result
-	CallPostResult(&intermediate_files, true, false)
+	CallPostResult(&intermediate_files, true, false, response.Map_Task_Number)
 
 }
 
@@ -108,7 +182,29 @@ func callMap(response *Response, mapf func(string, string) []KeyValue) {
 // the RPC argument and reply types are defined in rpc.go.
 //
 
-func CallPostResult(intermiediate_files *[]string, isMap bool, isReduce bool) {
+func PostReduceResult(outputfile string, taskNumber int) {
+	request := TaskResult{
+		Success:            true,
+		Final_Output:       outputfile,
+		Reduce_Task_Number: taskNumber,
+		IsReduce:           true,
+		IsMap:              false,
+	}
+
+	response := Response{}
+
+	ok := call("Coordinator.PostResult", &request, &response)
+
+	if !ok {
+		fmt.Println("Post Result received no response.")
+	} else {
+		// callReduce(response, reducef)
+		fmt.Println("Result posted.", request)
+	}
+}
+
+func CallPostResult(intermiediate_files *[]string, isMap bool, isReduce bool, taskNumber int) {
+	// for map tasks
 	request := TaskResult{}
 	response := Response{}
 
@@ -116,11 +212,12 @@ func CallPostResult(intermiediate_files *[]string, isMap bool, isReduce bool) {
 	request.Success = true
 	request.IsMap = isMap
 	request.IsReduce = isReduce
+	request.Map_Task_Number = taskNumber
 
 	ok := call("Coordinator.PostResult", &request, &response)
 
 	if !ok {
-		fmt.Println("GetTask RPC recieved no response.")
+		fmt.Println("Post Result received no response.")
 	} else {
 		// callReduce(response, reducef)
 		fmt.Println("Result posted.")
@@ -128,9 +225,12 @@ func CallPostResult(intermiediate_files *[]string, isMap bool, isReduce bool) {
 }
 
 func CallGetTask(mapf func(string, string) []KeyValue,
-	reducef func(string, []string) string) {
+	reducef func(string, []string) string) bool {
 
-	request := TaskRequest{Ready: true}
+	request := TaskRequest{
+		Ready:    true,
+		WorkerID: strconv.Itoa(os.Getpid()),
+	}
 	response := Response{}
 
 	ok := call("Coordinator.GetTask", &request, &response)
@@ -140,10 +240,13 @@ func CallGetTask(mapf func(string, string) []KeyValue,
 	} else if response.Is_Map {
 		// read file
 		callMap(&response, mapf)
-	} else {
-		// callReduce(response, reducef)
-		fmt.Println("Reduce time")
+	} else if response.Is_Reduce {
+		callReduce(&response, reducef)
+	} else if response.PleaseExit {
+		return true
 	}
+
+	return false
 
 }
 func CallExample() {

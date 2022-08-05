@@ -7,25 +7,31 @@ import (
 	"net/http"
 	"net/rpc"
 	"os"
+	"time"
 )
 
 type Coordinator struct {
-	mapTable        TaskTable
-	reduceTable     TaskTable
-	mapPhaseOver    bool
-	reducePhaseOver bool
-	taskQueue       TaskQueue
+	taskTable          TaskTable
+	intermediate_files IntermediateFiles
+	taskQueue          TaskQueue
+	workers            WorkerTable
+	reduceJobs         int
+	mapJobs            int
+	mapphaseover       bool
+	reducephaseover    bool
+	mapreduceover      chan bool
 }
 
-func initiateCoordinator() *Coordinator {
+func initiateCoordinator(mapJobs int, reduceJobs int) *Coordinator {
 	// initialize map table
 	c := Coordinator{}
-	c.mapTable = TaskTable{taskmap: make(map[string]Task)}
-	c.reduceTable = TaskTable{taskmap: make(map[string]Task)}
-	c.mapPhaseOver = false
-	c.reducePhaseOver = false
+	c.workers = WorkerTable{activeworkers: make(map[string]bool)}
+	c.taskTable = TaskTable{taskmap: make(map[string]*Task)}
 	c.taskQueue = TaskQueue{queue: make([]Task, 0)}
-
+	c.reduceJobs = reduceJobs
+	c.mapJobs = mapJobs
+	c.mapreduceover = make(chan bool)
+	c.intermediate_files = IntermediateFiles{files: make([][]string, 10)}
 	return &c
 }
 
@@ -44,39 +50,62 @@ func (c *Coordinator) GetTask(request *TaskRequest, response *Response) error {
 	// check task queue or fail
 	c.taskQueue.mu.Lock()
 	if len(c.taskQueue.queue) != 0 {
+		c.workers.mu.Lock()
+		worker_id := request.WorkerID
 		response.TaskAlloted = true
 		// deque a task
 		task := c.taskQueue.queue[0]
-		c.taskQueue.queue = c.taskQueue.queue[1:]
-		// fill response object
-		response.Filename = task.filename
-		response.Is_Map = task.is_map
-		response.Is_Reduce = task.is_reduce
-		response.N_Reduce = task.n_reduce
-		response.Map_Task_Number = task.map_task_number
-		response.Reduce_Task_Number = task.reduce_task_number
-		fmt.Println("Task Served", task, "Task Queue Length", len(c.taskQueue.queue))
-	} else {
-		response.TaskAlloted = false
+		if task.is_pseudo {
+			c.workers.activeworkers[worker_id] = false
+			response.PleaseExit = true
+		} else {
+			c.workers.activeworkers[worker_id] = true
+			c.taskQueue.queue = c.taskQueue.queue[1:]
+			// fill response object
+			response.Filename = task.filename
+			response.IntermediateFiles = task.intermedite_files
+			response.Is_Map = task.is_map
+			response.Is_Reduce = task.is_reduce
+			response.N_Reduce = task.n_reduce
+			response.Map_Task_Number = task.map_task_number
+			response.Reduce_Task_Number = task.reduce_task_number
+
+			// assign task time
+			task.time_assigned = time.Now()
+		}
+		c.workers.mu.Unlock()
 	}
 	c.taskQueue.mu.Unlock()
 	return nil
 }
 
 func (c *Coordinator) PostResult(request *TaskResult, response *Response) error {
-	// getting result
+	// getting result, store files for reduce
 	if request.IsMap {
-		c.reduceTable.mu.Lock()
-		files := request.Intermediate_Files
-		for i, file := range files {
-			c.reduceTable.taskmap[file] = Task{
-				filename:           file,
-				is_map:             false,
-				is_reduce:          true,
-				reduce_task_number: i,
-			}
+		c.intermediate_files.mu.Lock()
+		fmt.Println("inner intm", len(c.intermediate_files.files))
+		fmt.Println("Intm files", len(request.Intermediate_Files))
+		for i, file := range request.Intermediate_Files {
+			c.intermediate_files.files[i] = append(c.intermediate_files.files[i], file)
 		}
-		c.reduceTable.mu.Unlock()
+		c.intermediate_files.mu.Unlock()
+
+		// mark task as complete
+		c.taskTable.mu.Lock()
+		map_task_number := request.Map_Task_Number
+		task_id := fmt.Sprintf("maptask-%d", map_task_number)
+		task := c.taskTable.taskmap[task_id]
+		task.is_assigned = false
+		task.is_finished = true
+		c.taskTable.mu.Unlock()
+	} else if request.IsReduce {
+		c.taskTable.mu.Lock()
+		reduce_task_number := request.Reduce_Task_Number
+		task_id := fmt.Sprintf("reducetask-%d", reduce_task_number)
+		task := c.taskTable.taskmap[task_id]
+		task.is_assigned = false
+		task.is_finished = true
+		c.taskTable.mu.Unlock()
 	}
 	return nil
 }
@@ -102,12 +131,19 @@ func (c *Coordinator) server() {
 // if the entire job has finished.
 //
 func (c *Coordinator) Done() bool {
-	ret := false
-
-	// Your code here.
-	// checks the two variables : mapPhaseDone , reducePhaseDone
-
-	return ret
+	c.workers.mu.Lock()
+	if len(c.workers.activeworkers) == 0 {
+		c.workers.mu.Unlock()
+		return false
+	}
+	for _, worker := range c.workers.activeworkers {
+		if worker {
+			c.workers.mu.Unlock()
+			return false
+		}
+	}
+	c.workers.mu.Unlock()
+	return true
 }
 
 //
@@ -116,14 +152,14 @@ func (c *Coordinator) Done() bool {
 // nReduce is the number of reduce tasks to use.
 //
 func MakeCoordinator(files []string, nReduce int) *Coordinator {
-	c := initiateCoordinator()
+	c := initiateCoordinator(len(files), nReduce)
 	// Your code here.
 	// Schedular : periodically loads tasks in task queue,
 	// 			   exits when all tasks are either done or have exhausted retries
 	//			   changes the mapPhase and reducePhase to True before quitting
 
-	// load map tasks in queue
-	c.taskQueue.mu.Lock()
+	// load map tasks in mapTable
+	c.taskTable.mu.Lock()
 	for i := 0; i < len(files); i++ {
 		task := Task{
 			filename:        files[i],
@@ -131,11 +167,87 @@ func MakeCoordinator(files []string, nReduce int) *Coordinator {
 			n_reduce:        nReduce,
 			map_task_number: i,
 		}
-		c.taskQueue.queue = append(c.taskQueue.queue, task)
+		task_id := fmt.Sprintf("maptask-%d", i)
+		c.taskTable.taskmap[task_id] = &task
 	}
-	fmt.Println(len(files))
-	fmt.Println("Task Queue ready", c.taskQueue.queue)
-	c.taskQueue.mu.Unlock()
+	fmt.Println("MapTable Loaded")
+	c.taskTable.mu.Unlock()
+
+	go Scheduler(c)
+
 	c.server()
+
 	return c
+}
+
+// Scheduler
+func Scheduler(c *Coordinator) {
+	// load tasks to task queue
+	// map tasks
+	for {
+		done_maps := 0
+		done_reduces := 0
+
+		unassigned_tasks := make([]Task, 0)
+		// load task queue for map tasks
+		c.taskTable.mu.Lock()
+		for _, task := range c.taskTable.taskmap {
+			if !task.is_assigned && !task.is_finished {
+				task.is_assigned = true
+				unassigned_tasks = append(unassigned_tasks, *task)
+			} else if task.is_map && task.is_finished {
+				done_maps += 1
+			} else if task.is_reduce && task.is_finished {
+				done_reduces += 1
+			}
+		}
+		c.taskTable.mu.Unlock()
+
+		if len(unassigned_tasks) > 0 {
+			c.taskQueue.mu.Lock()
+			c.taskQueue.queue = append(c.taskQueue.queue, unassigned_tasks...)
+			c.taskQueue.mu.Unlock()
+		}
+
+		if c.mapJobs == done_maps && c.reduceJobs == done_reduces {
+			pseudo_task := Task{
+				is_pseudo: true,
+			}
+			c.taskQueue.mu.Lock()
+			c.taskQueue.queue = append(c.taskQueue.queue, pseudo_task)
+			c.taskQueue.mu.Unlock()
+		}
+
+		if done_maps == c.mapJobs && !c.mapphaseover {
+			// map phase done , now load all reduce jobs in queue
+			c.mapphaseover = true
+			reduce_tasks := make([]Task, 0)
+			c.intermediate_files.mu.Lock()
+			for i, file_arr := range c.intermediate_files.files {
+				task := Task{
+					intermedite_files:  file_arr,
+					is_reduce:          true,
+					is_map:             false,
+					reduce_task_number: i,
+					n_reduce:           c.reduceJobs,
+					is_assigned:        false,
+					is_finished:        false,
+				}
+				reduce_tasks = append(reduce_tasks, task)
+			}
+			c.intermediate_files.mu.Unlock()
+
+			c.taskTable.mu.Lock()
+			for _, task := range reduce_tasks {
+				task_id := fmt.Sprintf("reducetask-%d", task.reduce_task_number)
+				c.taskTable.taskmap[task_id] = &task
+			}
+			c.taskTable.mu.Unlock()
+
+			c.taskQueue.mu.Lock()
+			fmt.Println("reducers", len(reduce_tasks))
+			c.taskQueue.queue = append(c.taskQueue.queue, reduce_tasks...)
+			c.taskQueue.mu.Unlock()
+		}
+	}
 }
