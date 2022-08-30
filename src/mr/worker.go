@@ -107,10 +107,10 @@ func callReduce(response *Response, reducef func(string, []string) string) {
 	output_file_name := fmt.Sprintf("mr-out-%d", response.Reduce_Task_Number)
 	output_file_path := filepath.Join(output_file_name)
 
-	// discard if output file already exists
-	if _, err := os.Stat(output_file_path); err == nil {
-		os.Remove(output_file_name)
-	}
+	// // discard if output file already exists
+	// if _, err := os.Stat(output_file_path); err == nil {
+	// 	os.Remove(output_file_name)
+	// }
 
 	// create tmp file
 	tmpFile, err := ioutil.TempFile("", "*_mr-reduce")
@@ -127,10 +127,12 @@ func callReduce(response *Response, reducef func(string, []string) string) {
 	w.Flush()
 
 	// move tmp file to permanent file
-	os.Rename(tmpFile.Name(), filepath.Join(output_file_name))
+	os.Rename(tmpFile.Name(), output_file_path)
 
 	// close it
 	tmpFile.Close()
+
+	fmt.Println("Final Output", output_file_name)
 
 	PostReduceResult(output_file_name, response.Reduce_Task_Number)
 
@@ -165,9 +167,9 @@ func callMap(response *Response, mapf func(string, string) []KeyValue) {
 		output_file_path := filepath.Join(output_file_name)
 
 		// discard if output file already exists
-		if _, err := os.Stat(output_file_path); err == nil {
-			os.Remove(output_file_name)
-		}
+		// if _, err := os.Stat(output_file_path); err == nil {
+		// 	os.Remove(output_file_name)
+		// }
 
 		tmpFile, err := ioutil.TempFile("", "*_mr-map.json")
 		if err != nil {
@@ -216,9 +218,6 @@ func PostReduceResult(outputfile string, taskNumber int) {
 
 	if !ok {
 		fmt.Println("Post Result received no response.")
-	} else {
-		// callReduce(response, reducef)
-		fmt.Println("Result posted.", request)
 	}
 }
 
@@ -237,9 +236,6 @@ func CallPostResult(intermiediate_files *[]string, isMap bool, isReduce bool, ta
 
 	if !ok {
 		fmt.Println("Post Result received no response.")
-	} else {
-		// callReduce(response, reducef)
-		fmt.Println("Result posted.")
 	}
 }
 

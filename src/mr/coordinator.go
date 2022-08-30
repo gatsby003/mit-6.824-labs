@@ -115,7 +115,6 @@ func (c *Coordinator) PostResult(request *TaskResult, response *Response) error 
 			task.is_assigned = false
 			task.is_finished = true
 			c.taskTable.mu.Unlock()
-			fmt.Println("Marked Map Task Finished", task_id)
 		}(request, c)
 	} else if request.IsReduce {
 		defer func(request *TaskResult, c *Coordinator) {
@@ -125,8 +124,8 @@ func (c *Coordinator) PostResult(request *TaskResult, response *Response) error 
 			task := c.taskTable.taskmap[task_id]
 			task.is_assigned = false
 			task.is_finished = true
+			fmt.Println("Reduce Done", task.reduce_task_number)
 			c.taskTable.mu.Unlock()
-			fmt.Println("Marked Reduce Task as finished", task_id)
 		}(request, c)
 	}
 	return nil
@@ -152,30 +151,13 @@ func (c *Coordinator) server() {
 // main/mrcoordinator.go calls Done() periodically to find out
 // if the entire job has finished.
 //
-func (c *Coordinator) Done() bool {
-	var justdoit bool
-	c.mapreduceover.mu.Lock()
-	justdoit = c.mapreduceover.initateTearDown
-	c.mapreduceover.mu.Unlock()
-	if justdoit {
-		c.workers.mu.Lock()
-		// first run status check
-		if len(c.workers.activeworkers) == 0 {
-			c.workers.mu.Unlock()
-			return false
-		}
-		for _, worker := range c.workers.activeworkers {
-			lapsed := time.Since(worker.time_assigned)
-			if lapsed.Seconds() < 10 && worker.active {
-				c.workers.mu.Unlock()
-				return false
-			} else {
-				worker.active = false
-			}
-		}
 
-		c.workers.mu.Unlock()
-		return true
+func (c *Coordinator) Done() bool {
+
+	if CheckTasksDone(c) {
+		// check workers , and deactivate non-responding workers
+		done := CheckWorkersAndDeactivate(c)
+		return done
 	} else {
 		return false
 	}
@@ -189,27 +171,8 @@ func (c *Coordinator) Done() bool {
 //
 func MakeCoordinator(files []string, nReduce int) *Coordinator {
 	c := initiateCoordinator(len(files), nReduce)
-	// Your code here.
-	// Schedular : periodically loads tasks in task queue,
-	// 			   exits when all tasks are either done or have exhausted retries
-	//			   changes the mapPhase and reducePhase to True before quitting
 
-	// load map tasks in mapTable
-	c.taskTable.mu.Lock()
-	for i := 0; i < len(files); i++ {
-		task := Task{
-			filename:        files[i],
-			is_map:          true,
-			n_reduce:        nReduce,
-			map_task_number: i,
-		}
-		task_id := fmt.Sprintf("maptask-%d", i)
-		c.taskTable.taskmap[task_id] = &task
-	}
-	fmt.Println("MapTable Loaded")
-	c.taskTable.mu.Unlock()
-
-	go Scheduler(c)
+	go Scheduler(c, files, nReduce)
 
 	c.server()
 
@@ -217,91 +180,26 @@ func MakeCoordinator(files []string, nReduce int) *Coordinator {
 }
 
 // Scheduler
-func Scheduler(c *Coordinator) {
-	// load tasks to task queue
-	// map tasks
-	for {
-		done_maps := 0
-		done_reduces := 0
-		zero_value := time.Time{}
+func Scheduler(c *Coordinator, files []string, nReduce int) {
+	// Schedular : periodically loads tasks in task queue,
+	// 			   exits when all tasks are either done or have exhausted retries
+	//			   changes the mapPhase and reducePhase to True before quitting
 
-		unassigned_tasks := make([]Task, 0)
-		// load task queue for map tasks
-		c.taskTable.mu.Lock()
-		for _, task := range c.taskTable.taskmap {
-			elapsed_time := time.Since(task.time_assigned)
-			if task.time_assigned != zero_value && !task.is_finished && elapsed_time.Seconds() > 10 {
-				fmt.Println("Task Rescheduled", elapsed_time.Seconds())
-				unassigned_tasks = append(unassigned_tasks, *task)
-				task.time_assigned = time.Now()
-			}
-			if !task.is_assigned && !task.is_finished {
-				fmt.Println("Task Added", task.filename)
-				task.is_assigned = true
-				unassigned_tasks = append(unassigned_tasks, *task)
-			} else if task.is_map && task.is_finished {
-				done_maps += 1
-			} else if task.is_reduce && task.is_finished {
-				done_reduces += 1
-			}
-		}
-		c.taskTable.mu.Unlock()
-		if len(unassigned_tasks) > 0 {
-			c.taskQueue.mu.Lock()
-			c.taskQueue.queue = append(c.taskQueue.queue, unassigned_tasks...)
-			c.taskQueue.mu.Unlock()
+	// load map tasks to taskTable
+	LoadMapTasks(c, files, nReduce)
+
+	for {
+		// schedule tasks from task table into task queue , also manage rescheduling
+		done_maps, done_reduces := ScheduleTasks(c)
+
+		if done_maps == c.mapJobs && !c.mapphaseover {
+			// map phase done , now load all reduce jobs in table
+			LoadReduceTasks(c)
 		}
 
 		if c.mapJobs == done_maps && c.reduceJobs == done_reduces && !c.reducephaseover {
-			// before adding psudo task check if all reduce and map jobs are done
-
-			if !c.reducephaseover {
-				c.reducephaseover = true
-				c.mapreduceover.mu.Lock()
-				c.mapreduceover.initateTearDown = true
-				c.mapreduceover.mu.Unlock()
-				pseudo_task := Task{
-					is_pseudo: true,
-				}
-				c.taskQueue.mu.Lock()
-				c.taskQueue.queue = append(c.taskQueue.queue, pseudo_task)
-				c.taskQueue.mu.Unlock()
-			}
-		}
-
-		if done_maps == c.mapJobs && !c.mapphaseover {
-			// map phase done , now load all reduce jobs in queue
-
-			if !c.mapphaseover {
-				c.mapphaseover = true
-				reduce_tasks := make([]Task, 0)
-				c.intermediate_files.mu.Lock()
-				for i, file_arr := range c.intermediate_files.files {
-					task := Task{
-						intermedite_files:  file_arr,
-						is_reduce:          true,
-						is_map:             false,
-						reduce_task_number: i,
-						n_reduce:           c.reduceJobs,
-						is_assigned:        false,
-						is_finished:        false,
-					}
-					reduce_tasks = append(reduce_tasks, task)
-				}
-				c.intermediate_files.mu.Unlock()
-
-				c.taskTable.mu.Lock()
-				for _, task := range reduce_tasks {
-					task_id := fmt.Sprintf("reducetask-%d", task.reduce_task_number)
-					c.taskTable.taskmap[task_id] = &task
-				}
-				c.taskTable.mu.Unlock()
-
-				c.taskQueue.mu.Lock()
-				c.taskQueue.queue = append(c.taskQueue.queue, reduce_tasks...)
-				c.taskQueue.mu.Unlock()
-			}
-
+			// map jobs and reduce jobs over now load pseudo task to initiate teardown
+			Iniate_tearDown(c)
 		}
 
 	}
