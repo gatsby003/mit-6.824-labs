@@ -19,6 +19,7 @@ package raft
 
 import (
 	//	"bytes"
+
 	"fmt"
 	"math/rand"
 	"sync"
@@ -183,26 +184,26 @@ type RequestVoteReply struct {
 func (rf *Raft) RequestVote(args *RequestVoteArgs, reply *RequestVoteReply) {
 	// Your code here (2A, 2B).
 	rf.mu.Lock()
-	if rf.currentTerm <= args.Term && rf.votedFor == -1 {
-		rf.currentTerm = reply.Term
-		reply.VoteGranted = true
-	} else {
-		reply.Term = rf.currentTerm
+	if args.Term < rf.currentTerm {
 		reply.VoteGranted = false
+	} else if rf.votedFor == -1 {
+		rf.votedFor = args.CandidateId
+		reply.VoteGranted = true
 	}
+	rf.electionTimer = time.Now()
 	rf.mu.Unlock()
 }
 
 func (rf *Raft) AppendRPC(args *AppendRPCArgs, reply *AppendRPCReply) {
 	rf.mu.Lock()
 	if args.Term < rf.currentTerm {
+		fmt.Println("Anhoni")
 		reply.Success = false
 		reply.Term = rf.currentTerm
 	} else {
 		reply.Success = true
-		rf.currentTerm = reply.Term
-		rf.electionTimer = time.Now()
 	}
+	rf.electionTimer = time.Now()
 	rf.mu.Unlock()
 }
 
@@ -329,13 +330,10 @@ func (rf *Raft) ticker() {
 		// be started and to randomize sleeping time using
 		// time.Sleep().
 		rf.mu.Lock()
-		last_hb := rf.electionTimer
 
 		if rf.isLeader {
-			rf.electionTimer = time.Now()
-		}
-
-		if time.Since(last_hb).Milliseconds() > random_time.Milliseconds() {
+			fmt.Println("Im leader")
+		} else if time.Since(rf.electionTimer).Milliseconds() > random_time.Milliseconds() {
 			// timeout period passed
 			// start election
 			if election_started {
@@ -347,7 +345,7 @@ func (rf *Raft) ticker() {
 				rf.currentTerm = rf.currentTerm + 1
 				rf.votedFor = rf.me
 				rf.electionTimer = time.Now()
-
+				fmt.Println(time.Since(rf.electionTimer).Milliseconds())
 				go rf.startElection(stop_election)
 
 			}
@@ -358,14 +356,14 @@ func (rf *Raft) ticker() {
 		// if time greater than a fixed period , start election
 		// else sleep for a random time
 		// and try again
-		time.Sleep(time.Millisecond * 5)
+		time.Sleep(random_time)
 
 	}
 }
 
 func (rf *Raft) startElection(stop_election chan bool) {
 	var votes int32
-	var stop_seeking chan bool
+	stop_seeking := make(chan bool, 10)
 	votes += 1
 
 	rf.mu.Lock()
@@ -388,15 +386,17 @@ func (rf *Raft) startElection(stop_election chan bool) {
 			}
 			return
 		default:
-			if v := atomic.LoadInt32(&votes); v >= majority {
+			v := atomic.LoadInt32(&votes)
+			if v >= majority {
 				// election won , stop other seeking
-				if stop_seek := len(rf.peers) - int(v); stop_seek > 0 {
-					for i := 0; i < stop_seek; i++ {
-						stop_seeking <- true
-					}
-				}
+				fmt.Println(v, rf.me)
 				rf.mu.Lock()
 				rf.isLeader = true
+				for i := 0; i < len(rf.peers); i += 1 {
+					if i != rf.me {
+						go rf.sendHeartBeat(i, rf.currentTerm)
+					}
+				}
 				rf.mu.Unlock()
 				return
 			}
@@ -410,22 +410,20 @@ func (rf *Raft) seekVote(vote_counter *int32, server_id int, term int, me int, s
 		CandidateId: me,
 	}
 
-	var res RequestVoteReply
-	for !rf.sendRequestVote(server_id, &req, &res) {
+	for {
 		select {
 		case <-stop_seeking:
 			return
 		default:
-			res = RequestVoteReply{}
+			res := RequestVoteReply{}
+			if rf.sendRequestVote(server_id, &req, &res) {
+				if res.VoteGranted {
+					atomic.AddInt32(vote_counter, 1)
+					return
+				}
+			}
 		}
 	}
-
-	if res.VoteGranted {
-		atomic.AddInt32(vote_counter, 1)
-	} else if res.Term > term {
-		fmt.Println("Term greated than current term")
-	}
-
 }
 
 func randIntUtil() int {
