@@ -41,11 +41,6 @@ import (
 // other uses.
 //
 
-type ElectionCounter struct {
-	mu    sync.Mutex
-	votes int
-}
-
 type ApplyMsg struct {
 	CommandValid bool
 	Command      interface{}
@@ -157,12 +152,13 @@ func (rf *Raft) Snapshot(index int, snapshot []byte) {
 // field names must start with capital letters!
 //
 type AppendRPCArgs struct {
-	Term    int
-	Message string
+	Term     int
+	LeaderId int
 }
 
 type AppendRPCReply struct {
-	Term int
+	Term    int
+	Success bool
 }
 
 type RequestVoteArgs struct {
@@ -187,18 +183,27 @@ type RequestVoteReply struct {
 func (rf *Raft) RequestVote(args *RequestVoteArgs, reply *RequestVoteReply) {
 	// Your code here (2A, 2B).
 	rf.mu.Lock()
-	reply.Term = rf.currentTerm
-	if rf.currentTerm < args.Term && rf.votedFor == -1 {
+	if rf.currentTerm <= args.Term && rf.votedFor == -1 {
+		rf.currentTerm = reply.Term
 		reply.VoteGranted = true
 	} else {
+		reply.Term = rf.currentTerm
 		reply.VoteGranted = false
 	}
-	rf.electionTimer = time.Now()
 	rf.mu.Unlock()
 }
 
 func (rf *Raft) AppendRPC(args *AppendRPCArgs, reply *AppendRPCReply) {
 	rf.mu.Lock()
+	if args.Term < rf.currentTerm {
+		reply.Success = false
+		reply.Term = rf.currentTerm
+	} else {
+		reply.Success = true
+		rf.currentTerm = reply.Term
+		rf.electionTimer = time.Now()
+	}
+	rf.mu.Unlock()
 }
 
 //
