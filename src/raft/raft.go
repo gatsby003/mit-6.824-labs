@@ -294,15 +294,17 @@ func (rf *Raft) killed() bool {
 // heartsbeats recently.
 func (rf *Raft) heartbeats() {
 	for !rf.killed() {
-		term, isleader := rf.GetState()
+		rf.mu.Lock()
+		isleader := rf.isLeader
 		if isleader {
 			// send appendRPC
 			for i := 0; i < len(rf.peers); i += 1 {
 				if i != rf.me {
-					go rf.sendHeartBeat(i, term)
+					go rf.sendHeartBeat(i, rf.currentTerm)
 				}
 			}
 		}
+		rf.mu.Unlock()
 		time.Sleep(10 * time.Millisecond)
 	}
 
@@ -319,7 +321,7 @@ func (rf *Raft) sendHeartBeat(peer, term int) {
 func (rf *Raft) ticker() {
 	random_time := time.Microsecond * time.Duration(randIntUtil())
 	election_started := false
-	stop_election := make(chan bool)
+	stop_election := make(chan bool, 10)
 
 	for !rf.killed() {
 
@@ -328,6 +330,10 @@ func (rf *Raft) ticker() {
 		// time.Sleep().
 		rf.mu.Lock()
 		last_hb := rf.electionTimer
+
+		if rf.isLeader {
+			rf.electionTimer = time.Now()
+		}
 
 		if time.Since(last_hb).Milliseconds() > random_time.Milliseconds() {
 			// timeout period passed
@@ -342,7 +348,7 @@ func (rf *Raft) ticker() {
 				rf.votedFor = rf.me
 				rf.electionTimer = time.Now()
 
-				go rf.startElection()
+				go rf.startElection(stop_election)
 
 			}
 
@@ -357,14 +363,15 @@ func (rf *Raft) ticker() {
 	}
 }
 
-func (rf *Raft) startElection() {
+func (rf *Raft) startElection(stop_election chan bool) {
 	var votes int32
-
+	var stop_seeking chan bool
 	votes += 1
+
 	rf.mu.Lock()
 	for i := 0; i < len(rf.peers); i += 1 {
 		if i != rf.me {
-			go rf.seekVote(&votes, i, rf.currentTerm, rf.me)
+			go rf.seekVote(&votes, i, rf.currentTerm, rf.me, stop_seeking)
 		}
 	}
 
@@ -372,18 +379,32 @@ func (rf *Raft) startElection() {
 
 	rf.mu.Unlock()
 
-	for atomic.LoadInt32(&votes) < majority {
-		// wait for majortiy vote
+	for {
+		select {
+		case <-stop_election:
+			// stop election
+			for i := 0; i < len(rf.peers); i += 1 {
+				stop_seeking <- true
+			}
+			return
+		default:
+			if v := atomic.LoadInt32(&votes); v >= majority {
+				// election won , stop other seeking
+				if stop_seek := len(rf.peers) - int(v); stop_seek > 0 {
+					for i := 0; i < stop_seek; i++ {
+						stop_seeking <- true
+					}
+				}
+				rf.mu.Lock()
+				rf.isLeader = true
+				rf.mu.Unlock()
+				return
+			}
+		}
 	}
-
-	// majority achieved
-	rf.mu.Lock()
-	rf.isLeader = true
-	rf.mu.Unlock()
-
 }
 
-func (rf *Raft) seekVote(vote_counter *int32, server_id int, term int, me int) {
+func (rf *Raft) seekVote(vote_counter *int32, server_id int, term int, me int, stop_seeking chan bool) {
 	req := RequestVoteArgs{
 		Term:        term,
 		CandidateId: me,
@@ -391,7 +412,12 @@ func (rf *Raft) seekVote(vote_counter *int32, server_id int, term int, me int) {
 
 	var res RequestVoteReply
 	for !rf.sendRequestVote(server_id, &req, &res) {
-		res = RequestVoteReply{}
+		select {
+		case <-stop_seeking:
+			return
+		default:
+			res = RequestVoteReply{}
+		}
 	}
 
 	if res.VoteGranted {
