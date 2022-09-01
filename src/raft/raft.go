@@ -21,6 +21,7 @@ import (
 	//	"bytes"
 
 	"fmt"
+	"log"
 	"math/rand"
 	"sync"
 	"sync/atomic"
@@ -64,10 +65,12 @@ type Raft struct {
 	me        int                 // this peer's index into peers[]
 	dead      int32               // set by Kill()
 
-	currentTerm   int
-	isLeader      bool
-	votedFor      int
-	electionTimer time.Time
+	currentTerm      int
+	isLeader         bool
+	votedFor         int
+	electionTimer    time.Time
+	election_started *TAtomBool
+	stop_election    chan bool
 
 	// Your data here (2A, 2B, 2C).
 	// Look at the paper's Figure 2 for a description of what
@@ -185,21 +188,27 @@ func (rf *Raft) RequestVote(args *RequestVoteArgs, reply *RequestVoteReply) {
 	// Your code here (2A, 2B).
 	rf.mu.Lock()
 	if args.Term < rf.currentTerm {
+		rf.currentTerm = args.Term
 		reply.VoteGranted = false
 	} else if rf.votedFor == -1 {
 		rf.votedFor = args.CandidateId
 		reply.VoteGranted = true
+		rf.electionTimer = time.Now()
 	}
-	rf.electionTimer = time.Now()
 	rf.mu.Unlock()
 }
 
 func (rf *Raft) AppendRPC(args *AppendRPCArgs, reply *AppendRPCReply) {
 	rf.mu.Lock()
 	if args.Term < rf.currentTerm {
-		fmt.Println("Anhoni")
 		reply.Success = false
 		reply.Term = rf.currentTerm
+	} else if args.Term == rf.currentTerm {
+		// if candidate -> follower
+		if rf.election_started.Get() {
+			rf.stop_election <- true
+			rf.election_started.Set(false)
+		}
 	} else {
 		reply.Success = true
 	}
@@ -320,9 +329,9 @@ func (rf *Raft) sendHeartBeat(peer, term int) {
 }
 
 func (rf *Raft) ticker() {
-	random_time := time.Microsecond * time.Duration(randIntUtil())
-	election_started := false
-	stop_election := make(chan bool, 10)
+	random_time := time.Millisecond * time.Duration(randIntUtil())
+	// election_started := false
+	// stop_election := make(chan bool, 10)
 
 	for !rf.killed() {
 
@@ -331,22 +340,22 @@ func (rf *Raft) ticker() {
 		// time.Sleep().
 		rf.mu.Lock()
 
-		if rf.isLeader {
-			fmt.Println("Im leader")
-		} else if time.Since(rf.electionTimer).Milliseconds() > random_time.Milliseconds() {
+		if !rf.isLeader && time.Since(rf.electionTimer).Milliseconds() > random_time.Milliseconds() {
 			// timeout period passed
 			// start election
-			if election_started {
-				election_started = false
+			if rf.election_started.Get() {
+				// election_started = false
+				rf.election_started.Set(false)
 				rf.votedFor = -1
-				stop_election <- true
+				rf.stop_election <- true
+				fmt.Println("Election Retry")
 			} else {
-				election_started = true
+				rf.election_started.Set(true)
 				rf.currentTerm = rf.currentTerm + 1
 				rf.votedFor = rf.me
 				rf.electionTimer = time.Now()
-				fmt.Println(time.Since(rf.electionTimer).Milliseconds())
-				go rf.startElection(stop_election)
+				log.Printf("Election Started for term : %d by %d", rf.currentTerm, rf.me)
+				go rf.startElection()
 
 			}
 
@@ -361,7 +370,7 @@ func (rf *Raft) ticker() {
 	}
 }
 
-func (rf *Raft) startElection(stop_election chan bool) {
+func (rf *Raft) startElection() {
 	var votes int32
 	stop_seeking := make(chan bool, 10)
 	votes += 1
@@ -379,7 +388,7 @@ func (rf *Raft) startElection(stop_election chan bool) {
 
 	for {
 		select {
-		case <-stop_election:
+		case <-rf.stop_election:
 			// stop election
 			for i := 0; i < len(rf.peers); i += 1 {
 				stop_seeking <- true
@@ -389,7 +398,6 @@ func (rf *Raft) startElection(stop_election chan bool) {
 			v := atomic.LoadInt32(&votes)
 			if v >= majority {
 				// election won , stop other seeking
-				fmt.Println(v, rf.me)
 				rf.mu.Lock()
 				rf.isLeader = true
 				for i := 0; i < len(rf.peers); i += 1 {
@@ -419,6 +427,7 @@ func (rf *Raft) seekVote(vote_counter *int32, server_id int, term int, me int, s
 			if rf.sendRequestVote(server_id, &req, &res) {
 				if res.VoteGranted {
 					atomic.AddInt32(vote_counter, 1)
+					fmt.Println("Received vote")
 					return
 				}
 			}
@@ -458,9 +467,13 @@ func Make(peers []*labrpc.ClientEnd, me int,
 	rf.currentTerm = 0
 	rf.votedFor = -1
 
+	rf.election_started = &TAtomBool{}
+	rf.stop_election = make(chan bool, 10)
+
 	// initialize from state persisted before a crash
 	rf.readPersist(persister.ReadRaftState())
 
+	fmt.Println("Peers: ", len(rf.peers))
 	// start ticker goroutine to start elections
 	go rf.ticker()
 
