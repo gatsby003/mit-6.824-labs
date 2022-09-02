@@ -20,8 +20,6 @@ package raft
 import (
 	//	"bytes"
 
-	"fmt"
-	"log"
 	"math/rand"
 	"sync"
 	"sync/atomic"
@@ -194,6 +192,16 @@ func (rf *Raft) RequestVote(args *RequestVoteArgs, reply *RequestVoteReply) {
 		rf.votedFor = args.CandidateId
 		reply.VoteGranted = true
 		rf.electionTimer = time.Now()
+	} else if args.Term > rf.currentTerm {
+		if rf.election_started.Get() {
+			// if election going on stop it
+			rf.stop_election <- true
+			rf.election_started.Set(false)
+			rf.electionTimer = time.Now()
+		}
+		rf.currentTerm = args.Term
+		rf.votedFor = args.CandidateId
+		reply.VoteGranted = true
 	}
 	rf.mu.Unlock()
 }
@@ -203,13 +211,16 @@ func (rf *Raft) AppendRPC(args *AppendRPCArgs, reply *AppendRPCReply) {
 	if args.Term < rf.currentTerm {
 		reply.Success = false
 		reply.Term = rf.currentTerm
-	} else if args.Term == rf.currentTerm {
+	} else if args.Term >= rf.currentTerm {
 		// if candidate -> follower
 		if rf.election_started.Get() {
 			rf.stop_election <- true
 			rf.election_started.Set(false)
+		} else if rf.isLeader {
+			rf.isLeader = false
+			rf.votedFor = -1
+			reply.Success = true
 		}
-	} else {
 		reply.Success = true
 	}
 	rf.electionTimer = time.Now()
@@ -348,13 +359,11 @@ func (rf *Raft) ticker() {
 				rf.election_started.Set(false)
 				rf.votedFor = -1
 				rf.stop_election <- true
-				fmt.Println("Election Retry")
 			} else {
 				rf.election_started.Set(true)
 				rf.currentTerm = rf.currentTerm + 1
 				rf.votedFor = rf.me
 				rf.electionTimer = time.Now()
-				log.Printf("Election Started for term : %d by %d", rf.currentTerm, rf.me)
 				go rf.startElection()
 
 			}
@@ -427,7 +436,6 @@ func (rf *Raft) seekVote(vote_counter *int32, server_id int, term int, me int, s
 			if rf.sendRequestVote(server_id, &req, &res) {
 				if res.VoteGranted {
 					atomic.AddInt32(vote_counter, 1)
-					fmt.Println("Received vote")
 					return
 				}
 			}
@@ -473,7 +481,6 @@ func Make(peers []*labrpc.ClientEnd, me int,
 	// initialize from state persisted before a crash
 	rf.readPersist(persister.ReadRaftState())
 
-	fmt.Println("Peers: ", len(rf.peers))
 	// start ticker goroutine to start elections
 	go rf.ticker()
 
