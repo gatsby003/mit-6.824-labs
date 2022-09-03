@@ -2,6 +2,7 @@ package raft
 
 import (
 	"log"
+	"math/rand"
 	"sync/atomic"
 )
 
@@ -30,4 +31,14 @@ func (b *TAtomBool) Get() bool {
 		return true
 	}
 	return false
+}
+
+func RandIntUtil() int {
+	min := 300
+	max := 500
+
+	val := rand.Intn(max-min) + min
+
+	return val
+
 }
