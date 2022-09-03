@@ -32,6 +32,7 @@ func Make(peers []*labrpc.ClientEnd, me int,
 	// start ticker goroutine to start elections
 	go rf.ticker()
 
+	// goroutine in-charge of leader related activities
 	go rf.heartbeats()
 
 	return rf
