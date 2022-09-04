@@ -1,43 +1,489 @@
+302ms
+Test (2A): initial election ...
+443ms
+391ms
+  ... Passed --   3.0  3 97768 12018072    0
 Test (2A): election after network failure ...
-2022/09/04 10:18:32 000000 FOLLOWER Starting Election for Server 1 Term 1
-2022/09/04 10:18:32 000000 FOLLOWER Starting Election for Server 2 Term 1
-2022/09/04 10:18:32 006235 CANDIDATE Election Timeout for Server 1 Term 1
-2022/09/04 10:18:32 006243 LEADER Election won sending heartbeats Server 0 Term 1
-2022/09/04 10:18:33 015571 FOLLOWER Starting Election for Server 1 Term 2
-2022/09/04 10:18:33 015573 LEADER Election won sending heartbeats Server 1 Term 2
-2022/09/04 10:18:35 030396 FOLLOWER Starting Election for Server 2 Term 3
-2022/09/04 10:18:35 030747 FOLLOWER Starting Election for Server 0 Term 2
-2022/09/04 10:18:36 039084 CANDIDATE Election Timeout for Server 2 Term 3
-2022/09/04 10:18:36 039533 CANDIDATE Election Timeout for Server 0 Term 2
-2022/09/04 10:18:36 043424 FOLLOWER Starting Election for Server 2 Term 4
-2022/09/04 10:18:36 043925 FOLLOWER Starting Election for Server 0 Term 3
-2022/09/04 10:18:37 052108 CANDIDATE Election Timeout for Server 2 Term 4
-2022/09/04 10:18:37 052711 CANDIDATE Election Timeout for Server 0 Term 3
-2022/09/04 10:18:38 057104 FOLLOWER Starting Election for Server 0 Term 4
-2022/09/04 10:18:38 060790 FOLLOWER Starting Election for Server 2 Term 2
-2022/09/04 10:18:38 065884 CANDIDATE Election Timeout for Server 0 Term 2
-2022/09/04 10:18:38 065885 LEADER Election won sending heartbeats Server 2 Term 2
-2022/09/04 10:18:39 074672 FOLLOWER Starting Election for Server 0 Term 3
-2022/09/04 10:18:39 074696 FOLLOWER Starting Election for Server 1 Term 3
-2022/09/04 10:18:40 078151 FOLLOWER Starting Election for Server 2 Term 3
-2022/09/04 10:18:40 080916 CANDIDATE Election Timeout for Server 1 Term 2
-2022/09/04 10:18:40 083457 CANDIDATE Election Timeout for Server 0 Term 3
-2022/09/04 10:18:41 086838 CANDIDATE Election Timeout for Server 2 Term 3
-2022/09/04 10:18:41 087145 FOLLOWER Starting Election for Server 1 Term 3
-2022/09/04 10:18:41 087849 FOLLOWER Starting Election for Server 0 Term 4
-2022/09/04 10:18:41 093373 CANDIDATE Election Timeout for Server 1 Term 3
-2022/09/04 10:18:41 095521 FOLLOWER Starting Election for Server 2 Term 4
-2022/09/04 10:18:42 096485 FOLLOWER Starting Election for Server 1 Term 4
-2022/09/04 10:18:42 096631 CANDIDATE Election Timeout for Server 0 Term 4
-2022/09/04 10:18:42 101022 FOLLOWER Starting Election for Server 0 Term 5
-2022/09/04 10:18:42 102707 CANDIDATE Election Timeout for Server 1 Term 4
-2022/09/04 10:18:42 104203 CANDIDATE Election Timeout for Server 2 Term 4
-2022/09/04 10:18:42 105820 FOLLOWER Starting Election for Server 1 Term 5
-2022/09/04 10:18:43 108543 FOLLOWER Starting Election for Server 2 Term 5
-2022/09/04 10:18:43 109804 CANDIDATE Election Timeout for Server 0 Term 5
-2022/09/04 10:18:43 112043 CANDIDATE Election Timeout for Server 1 Term 5
-2022/09/04 10:18:43 115154 FOLLOWER Starting Election for Server 1 Term 6
-2022/09/04 10:18:44 117230 CANDIDATE Election Timeout for Server 2 Term 5
-2022/09/04 10:18:44 118588 FOLLOWER Starting Election for Server 0 Term 3
---- FAIL: TestReElection2A (12.06s)
+489ms
+305ms
+468ms
+--- FAIL: TestReElection2A (9.58s)
     config.go:460: expected one leader, got none
+Test (2A): multiple elections ...
+310ms
+448ms
+321ms
+481ms
+333ms
+344ms
+316ms
+  ... Passed --   5.7  7 71179 8793987    0
+FAIL
+exit status 1
+FAIL	6.824/raft	18.671s
+Test (2A): initial election ...
+492ms
+308ms
+366ms
+  ... Passed --   3.6  3 121090 14877702    0
+492ms
+406ms
+Test (2A): election after network failure ...
+444ms
+  ... Passed --   5.5  3 64549 7936977    0
+Test (2A): multiple elections ...
+367ms
+409ms
+465ms
+496ms
+419ms
+373ms
+394ms
+  ... Passed --   5.4  7 15025 1826351    0
+PASS
+ok  	6.824/raft	14.597s
+Test (2A): initial election ...
+398ms
+331ms
+356ms
+  ... Passed --   3.1  3 101012 12235856    0
+344ms
+Test (2A): election after network failure ...
+367ms
+341ms
+  ... Passed --   5.5  3 23958 2929944    0
+444ms
+Test (2A): multiple elections ...
+391ms
+456ms
+342ms
+344ms
+450ms
+452ms
+  ... Passed --   6.5  7 33856 4106444    0
+PASS
+ok  	6.824/raft	15.170s
+414ms
+372ms
+353ms
+Test (2A): initial election ...
+  ... Passed --   3.1  3 101124 12252222    0
+405ms
+Test (2A): election after network failure ...
+394ms
+339ms
+  ... Passed --   5.1  3 23815 2940893    0
+319ms
+Test (2A): multiple elections ...
+470ms
+449ms
+303ms
+464ms
+496ms
+434ms
+  ... Passed --   5.9  7 48406 5897460    0
+PASS
+ok  	6.824/raft	14.170s
+379ms
+477ms
+349ms
+Test (2A): initial election ...
+  ... Passed --   3.0  3 98448 12102556    0
+317ms
+486ms
+Test (2A): election after network failure ...
+405ms
+  ... Passed --   5.7  3 59080 7244044    0
+318ms
+Test (2A): multiple elections ...
+374ms
+364ms
+444ms
+353ms
+445ms
+326ms
+  ... Passed --   5.4  7 38265 4610907    0
+PASS
+ok  	6.824/raft	14.223s
+Test (2A): initial election ...
+343ms
+361ms
+401ms
+  ... Passed --   3.0  3 98236 12075128    0
+308ms
+Test (2A): election after network failure ...
+376ms
+380ms
+  ... Passed --   5.5  3 14067 1695499    0
+368ms
+496ms
+Test (2A): multiple elections ...
+415ms
+359ms
+382ms
+394ms
+472ms
+  ... Passed --   5.6  7 6068  733878    0
+PASS
+ok  	6.824/raft	14.174s
+Test (2A): initial election ...
+345ms
+314ms
+329ms
+  ... Passed --   3.0  3 98362 11916026    0
+375ms
+Test (2A): election after network failure ...
+397ms
+366ms
+  ... Passed --   6.0  3 14105 1701651    0
+375ms
+342ms
+Test (2A): multiple elections ...
+421ms
+358ms
+382ms
+454ms
+319ms
+Stepping Down
+  ... Passed --   5.4  7 26552 3269834    0
+PASS
+ok  	6.824/raft	14.472s
+Test (2A): initial election ...
+408ms
+306ms
+310ms
+  ... Passed --   3.5  3 115686 14025848    0
+386ms
+469ms
+486ms
+Test (2A): election after network failure ...
+  ... Passed --   6.0  3 51574 6395982    0
+332ms
+Test (2A): multiple elections ...
+391ms
+343ms
+368ms
+455ms
+361ms
+347ms
+  ... Passed --   5.5  7 3931  466287    0
+PASS
+ok  	6.824/raft	15.172s
+340ms
+Test (2A): initial election ...
+336ms
+317ms
+  ... Passed --   3.0  3 97704 11837102    0
+Test (2A): election after network failure ...
+349ms
+304ms
+396ms
+  ... Passed --   4.5  3 13401 1642915    0
+485ms
+488ms
+333ms
+471ms
+Test (2A): multiple elections ...
+458ms
+464ms
+394ms
+  ... Passed --   7.4  7 72995 9025755    0
+PASS
+ok  	6.824/raft	15.015s
+Test (2A): initial election ...
+331ms
+431ms
+397ms
+  ... Passed --   3.6  3 114944 14126200    0
+389ms
+428ms
+Test (2A): election after network failure ...
+404ms
+  ... Passed --   5.1  3 13556 1634449    0
+323ms
+318ms
+326ms
+Test (2A): multiple elections ...
+376ms
+340ms
+425ms
+422ms
+Stepping Down
+  ... Passed --   5.8  7 66889 8213903    0
+PASS
+ok  	6.824/raft	14.576s
+416ms
+Test (2A): initial election ...
+456ms
+309ms
+  ... Passed --   3.1  3 98559 11947413    0
+348ms
+Test (2A): election after network failure ...
+380ms
+393ms
+  ... Passed --   5.6  3 12409 1494563    0
+307ms
+Test (2A): multiple elections ...
+437ms
+410ms
+332ms
+363ms
+458ms
+423ms
+  ... Passed --   5.5  7 60211 7297659    0
+PASS
+ok  	6.824/raft	14.278s
+Test (2A): initial election ...
+420ms
+476ms
+397ms
+  ... Passed --   3.0  3 98010 12044916    0
+479ms
+420ms
+Test (2A): election after network failure ...
+312ms
+  ... Passed --   4.5  3 14271 1721780    0
+433ms
+408ms
+321ms
+448ms
+369ms
+307ms
+447ms
+Test (2A): multiple elections ...
+  ... Passed --   6.6  7 25478 3106242    0
+PASS
+ok  	6.824/raft	14.245s
+487ms
+431ms
+437ms
+Test (2A): initial election ...
+  ... Passed --   3.1  3 98596 11951360    0
+345ms
+453ms
+491ms
+Test (2A): election after network failure ...
+  ... Passed --   5.6  3 12541 1511093    0
+464ms
+300ms
+Test (2A): multiple elections ...
+431ms
+390ms
+432ms
+402ms
+344ms
+  ... Passed --   5.4  7 21444 2641072    0
+PASS
+ok  	6.824/raft	14.233s
+Test (2A): initial election ...
+374ms
+372ms
+461ms
+  ... Passed --   3.0  3 95719 11766199    0
+326ms
+Test (2A): election after network failure ...
+364ms
+385ms
+  ... Passed --   4.9  3 18679 2285111    0
+Test (2A): multiple elections ...
+441ms
+443ms
+498ms
+358ms
+393ms
+350ms
+408ms
+  ... Passed --   5.7  7 50080 6135950    0
+PASS
+ok  	6.824/raft	13.759s
+352ms
+Test (2A): initial election ...
+494ms
+477ms
+  ... Passed --   3.5  3 109445 13448793    0
+301ms
+473ms
+314ms
+Test (2A): election after network failure ...
+--- FAIL: TestReElection2A (8.31s)
+    config.go:460: expected one leader, got none
+485ms
+329ms
+Test (2A): multiple elections ...
+352ms
+393ms
+333ms
+491ms
+496ms
+  ... Passed --   6.0  7 45453 5568844    0
+FAIL
+exit status 1
+FAIL	6.824/raft	17.915s
+495ms
+Test (2A): initial election ...
+360ms
+426ms
+  ... Passed --   3.1  3 95762 11606622    0
+373ms
+Test (2A): election after network failure ...
+489ms
+484ms
+  ... Passed --   5.4  3 12220 1472398    0
+349ms
+431ms
+Test (2A): multiple elections ...
+386ms
+352ms
+341ms
+427ms
+426ms
+  ... Passed --   5.3  7 15574 1902930    0
+PASS
+ok  	6.824/raft	13.932s
+Test (2A): initial election ...
+491ms
+340ms
+330ms
+  ... Passed --   3.1  3 96966 11732256    0
+318ms
+Test (2A): election after network failure ...
+456ms
+401ms
+  ... Passed --   5.6  3 42947 5249691    0
+341ms
+Test (2A): multiple elections ...
+359ms
+481ms
+414ms
+357ms
+316ms
+417ms
+  ... Passed --   6.0  7 50402 6209974    0
+PASS
+ok  	6.824/raft	14.841s
+422ms
+Test (2A): initial election ...
+324ms
+334ms
+  ... Passed --   3.1  3 96289 11835445    0
+312ms
+Test (2A): election after network failure ...
+357ms
+349ms
+  ... Passed --   4.9  3 16536 2027772    0
+432ms
+318ms
+Test (2A): multiple elections ...
+329ms
+338ms
+358ms
+399ms
+344ms
+  ... Passed --   6.0  7 36105 4411999    0
+PASS
+ok  	6.824/raft	14.560s
+329ms
+401ms
+Test (2A): initial election ...
+302ms
+  ... Passed --   3.1  3 93977 11387075    0
+378ms
+Test (2A): election after network failure ...
+377ms
+373ms
+  ... Passed --   6.5  3 28042 3402180    0
+423ms
+450ms
+Test (2A): multiple elections ...
+412ms
+387ms
+425ms
+379ms
+373ms
+  ... Passed --   9.0  7 62091 7628948    0
+PASS
+ok  	6.824/raft	18.619s
+Test (2A): initial election ...
+374ms
+339ms
+406ms
+  ... Passed --   3.0  3 91622 11261436    0
+Test (2A): election after network failure ...
+425ms
+476ms
+451ms
+  ... Passed --   5.0  3 13059 1600091    0
+308ms
+408ms
+Test (2A): multiple elections ...
+386ms
+367ms
+433ms
+394ms
+491ms
+Stepping Down
+  ... Passed --   7.6  7 80989 9999351    0
+PASS
+ok  	6.824/raft	15.678s
+332ms
+343ms
+Test (2A): initial election ...
+315ms
+  ... Passed --   3.1  3 93912 11375122    0
+335ms
+Test (2A): election after network failure ...
+409ms
+473ms
+Stepping Down
+  ... Passed --   6.1  3 28589 3481963    0
+330ms
+Test (2A): multiple elections ...
+347ms
+316ms
+391ms
+381ms
+393ms
+451ms
+  ... Passed --   6.0  7 57146 6958750    0
+PASS
+ok  	6.824/raft	15.465s
+Test (2A): initial election ...
+382ms
+486ms
+487ms
+  ... Passed --   3.0  3 94386 11601356    0
+373ms
+343ms
+Test (2A): election after network failure ...
+495ms
+Stepping Down
+  ... Passed --   5.0  3 22493 2769067    0
+427ms
+Test (2A): multiple elections ...
+352ms
+455ms
+326ms
+452ms
+447ms
+379ms
+  ... Passed --   5.8  7 41182 5006312    0
+PASS
+ok  	6.824/raft	13.913s
+490ms
+472ms
+396ms
+Test (2A): initial election ...
+  ... Passed --   3.0  3 90299 10925641    0
+406ms
+Test (2A): election after network failure ...
+445ms
+378ms
+  ... Passed --   5.0  3 13954 1704282    0
+466ms
+445ms
+Test (2A): multiple elections ...
+472ms
+467ms
+311ms
+414ms
+455ms

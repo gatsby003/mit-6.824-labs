@@ -1,6 +1,7 @@
 package raft
 
 import (
+	"fmt"
 	"sync/atomic"
 	"time"
 )
@@ -9,6 +10,7 @@ func (rf *Raft) ticker() {
 	// election_started := false
 	// stop_election := make(chan bool, 10)
 	random_time := time.Millisecond * time.Duration(RandIntUtil())
+	fmt.Println(random_time)
 	for !rf.killed() {
 
 		// Your code here to check if a leader election should

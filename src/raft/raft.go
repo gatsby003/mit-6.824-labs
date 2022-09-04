@@ -70,6 +70,7 @@ type Raft struct {
 	stop_election    chan bool
 
 	start_since time.Time
+	debug       bool
 
 	// Your data here (2A, 2B, 2C).
 	// Look at the paper's Figure 2 for a description of what

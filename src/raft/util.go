@@ -22,7 +22,7 @@ const (
 // Debugging
 
 func (rf *Raft) Debug(topic logTopic, format string, a ...interface{}) {
-	{
+	if rf.debug {
 		time := time.Since(rf.start_since).Microseconds()
 		time /= 100
 		prefix := fmt.Sprintf("%06d %v ", time, string(topic))

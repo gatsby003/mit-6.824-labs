@@ -1,28 +1,35 @@
 package raft
 
-import "time"
+import (
+	"fmt"
+	"time"
+)
 
 func (rf *Raft) RequestVote(args *RequestVoteArgs, reply *RequestVoteReply) {
 	// Your code here (2A, 2B).
 	rf.mu.Lock()
 	if args.Term < rf.currentTerm {
-		rf.currentTerm = args.Term
+		reply.Term = rf.currentTerm
 		reply.VoteGranted = false
 	} else if args.Term == rf.currentTerm && rf.votedFor == -1 {
 		rf.votedFor = args.CandidateId
 		reply.VoteGranted = true
 		rf.electionTimer = time.Now()
-
 	} else if args.Term > rf.currentTerm {
 		if rf.election_started.Get() {
 			// if election going on stop it
 			rf.stop_election <- true
 			rf.election_started.Set(false)
-			rf.electionTimer = time.Now()
+		} else if rf.isLeader {
+			rf.isLeader = false
+			fmt.Println("Stepping Down")
 		}
 		rf.currentTerm = args.Term
 		rf.votedFor = args.CandidateId
 		reply.VoteGranted = true
+		rf.electionTimer = time.Now()
+	} else {
+		reply.VoteGranted = false
 	}
 	rf.mu.Unlock()
 }
@@ -37,14 +44,16 @@ func (rf *Raft) AppendRPC(args *AppendRPCArgs, reply *AppendRPCReply) {
 		if rf.election_started.Get() {
 			rf.stop_election <- true
 			rf.election_started.Set(false)
+			reply.Success = true
 		} else if rf.isLeader {
 			rf.isLeader = false
 			rf.votedFor = -1
 			reply.Success = true
+		} else {
+			reply.Success = true
 		}
-		reply.Success = true
+		rf.electionTimer = time.Now()
 	}
-	rf.electionTimer = time.Now()
 	rf.mu.Unlock()
 }
 

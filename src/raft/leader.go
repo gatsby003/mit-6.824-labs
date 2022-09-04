@@ -17,7 +17,7 @@ func (rf *Raft) heartbeats() {
 			}
 		}
 		rf.mu.Unlock()
-		time.Sleep(5 * time.Millisecond)
+		time.Sleep(100 * time.Millisecond)
 	}
 
 }
