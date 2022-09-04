@@ -8,10 +8,11 @@ func (rf *Raft) RequestVote(args *RequestVoteArgs, reply *RequestVoteReply) {
 	if args.Term < rf.currentTerm {
 		rf.currentTerm = args.Term
 		reply.VoteGranted = false
-	} else if rf.votedFor == -1 {
+	} else if args.Term == rf.currentTerm && rf.votedFor == -1 {
 		rf.votedFor = args.CandidateId
 		reply.VoteGranted = true
 		rf.electionTimer = time.Now()
+
 	} else if args.Term > rf.currentTerm {
 		if rf.election_started.Get() {
 			// if election going on stop it

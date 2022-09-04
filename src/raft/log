@@ -1,0 +1,43 @@
+Test (2A): election after network failure ...
+2022/09/04 10:18:32 000000 FOLLOWER Starting Election for Server 1 Term 1
+2022/09/04 10:18:32 000000 FOLLOWER Starting Election for Server 2 Term 1
+2022/09/04 10:18:32 006235 CANDIDATE Election Timeout for Server 1 Term 1
+2022/09/04 10:18:32 006243 LEADER Election won sending heartbeats Server 0 Term 1
+2022/09/04 10:18:33 015571 FOLLOWER Starting Election for Server 1 Term 2
+2022/09/04 10:18:33 015573 LEADER Election won sending heartbeats Server 1 Term 2
+2022/09/04 10:18:35 030396 FOLLOWER Starting Election for Server 2 Term 3
+2022/09/04 10:18:35 030747 FOLLOWER Starting Election for Server 0 Term 2
+2022/09/04 10:18:36 039084 CANDIDATE Election Timeout for Server 2 Term 3
+2022/09/04 10:18:36 039533 CANDIDATE Election Timeout for Server 0 Term 2
+2022/09/04 10:18:36 043424 FOLLOWER Starting Election for Server 2 Term 4
+2022/09/04 10:18:36 043925 FOLLOWER Starting Election for Server 0 Term 3
+2022/09/04 10:18:37 052108 CANDIDATE Election Timeout for Server 2 Term 4
+2022/09/04 10:18:37 052711 CANDIDATE Election Timeout for Server 0 Term 3
+2022/09/04 10:18:38 057104 FOLLOWER Starting Election for Server 0 Term 4
+2022/09/04 10:18:38 060790 FOLLOWER Starting Election for Server 2 Term 2
+2022/09/04 10:18:38 065884 CANDIDATE Election Timeout for Server 0 Term 2
+2022/09/04 10:18:38 065885 LEADER Election won sending heartbeats Server 2 Term 2
+2022/09/04 10:18:39 074672 FOLLOWER Starting Election for Server 0 Term 3
+2022/09/04 10:18:39 074696 FOLLOWER Starting Election for Server 1 Term 3
+2022/09/04 10:18:40 078151 FOLLOWER Starting Election for Server 2 Term 3
+2022/09/04 10:18:40 080916 CANDIDATE Election Timeout for Server 1 Term 2
+2022/09/04 10:18:40 083457 CANDIDATE Election Timeout for Server 0 Term 3
+2022/09/04 10:18:41 086838 CANDIDATE Election Timeout for Server 2 Term 3
+2022/09/04 10:18:41 087145 FOLLOWER Starting Election for Server 1 Term 3
+2022/09/04 10:18:41 087849 FOLLOWER Starting Election for Server 0 Term 4
+2022/09/04 10:18:41 093373 CANDIDATE Election Timeout for Server 1 Term 3
+2022/09/04 10:18:41 095521 FOLLOWER Starting Election for Server 2 Term 4
+2022/09/04 10:18:42 096485 FOLLOWER Starting Election for Server 1 Term 4
+2022/09/04 10:18:42 096631 CANDIDATE Election Timeout for Server 0 Term 4
+2022/09/04 10:18:42 101022 FOLLOWER Starting Election for Server 0 Term 5
+2022/09/04 10:18:42 102707 CANDIDATE Election Timeout for Server 1 Term 4
+2022/09/04 10:18:42 104203 CANDIDATE Election Timeout for Server 2 Term 4
+2022/09/04 10:18:42 105820 FOLLOWER Starting Election for Server 1 Term 5
+2022/09/04 10:18:43 108543 FOLLOWER Starting Election for Server 2 Term 5
+2022/09/04 10:18:43 109804 CANDIDATE Election Timeout for Server 0 Term 5
+2022/09/04 10:18:43 112043 CANDIDATE Election Timeout for Server 1 Term 5
+2022/09/04 10:18:43 115154 FOLLOWER Starting Election for Server 1 Term 6
+2022/09/04 10:18:44 117230 CANDIDATE Election Timeout for Server 2 Term 5
+2022/09/04 10:18:44 118588 FOLLOWER Starting Election for Server 0 Term 3
+--- FAIL: TestReElection2A (12.06s)
+    config.go:460: expected one leader, got none

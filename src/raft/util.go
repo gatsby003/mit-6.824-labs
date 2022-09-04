@@ -1,19 +1,34 @@
 package raft
 
 import (
+	"fmt"
 	"log"
 	"math/rand"
 	"sync/atomic"
+	"time"
+)
+
+type logTopic string
+
+const (
+	dVote       logTopic = "VOTE"
+	dHeartBeat  logTopic = "HEARTBEAT"
+	dResetTimer logTopic = "TIMER"
+	dLeader     logTopic = "LEADER"
+	dFollower   logTopic = "FOLLOWER"
+	dCanidate   logTopic = "CANDIDATE"
 )
 
 // Debugging
-const Debug = false
 
-func DPrintf(format string, a ...interface{}) (n int, err error) {
-	if Debug {
+func (rf *Raft) Debug(topic logTopic, format string, a ...interface{}) {
+	{
+		time := time.Since(rf.start_since).Microseconds()
+		time /= 100
+		prefix := fmt.Sprintf("%06d %v ", time, string(topic))
+		format = prefix + format
 		log.Printf(format, a...)
 	}
-	return
 }
 
 type TAtomBool struct{ flag int32 }

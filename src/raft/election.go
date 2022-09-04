@@ -6,10 +6,9 @@ import (
 )
 
 func (rf *Raft) ticker() {
-	random_time := time.Millisecond * time.Duration(RandIntUtil())
 	// election_started := false
 	// stop_election := make(chan bool, 10)
-
+	random_time := time.Millisecond * time.Duration(RandIntUtil())
 	for !rf.killed() {
 
 		// Your code here to check if a leader election should
@@ -25,12 +24,14 @@ func (rf *Raft) ticker() {
 				rf.election_started.Set(false)
 				rf.votedFor = -1
 				rf.stop_election <- true
+				rf.Debug(dCanidate, "Election Timeout for Server %d Term %d", rf.me, rf.currentTerm)
 			} else {
 				rf.election_started.Set(true)
 				rf.currentTerm = rf.currentTerm + 1
 				rf.votedFor = rf.me
 				rf.electionTimer = time.Now()
 				go rf.startElection()
+				rf.Debug(dFollower, "Starting Election for Server %d Term %d", rf.me, rf.currentTerm)
 
 			}
 
@@ -80,6 +81,7 @@ func (rf *Raft) startElection() {
 						go rf.sendHeartBeat(i, rf.currentTerm)
 					}
 				}
+				rf.Debug(dLeader, "Election won sending heartbeats Server %d Term %d", rf.me, rf.currentTerm)
 				rf.mu.Unlock()
 				return
 			}

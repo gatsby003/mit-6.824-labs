@@ -1,6 +1,10 @@
 package raft
 
-import "6.824/labrpc"
+import (
+	"time"
+
+	"6.824/labrpc"
+)
 
 // the service or tester wants to create a Raft server. the ports
 // of all the Raft servers (including this one) are in peers[]. this
@@ -25,6 +29,8 @@ func Make(peers []*labrpc.ClientEnd, me int,
 
 	rf.election_started = &TAtomBool{}
 	rf.stop_election = make(chan bool, 10)
+
+	rf.start_since = time.Now()
 
 	// initialize from state persisted before a crash
 	rf.readPersist(persister.ReadRaftState())
