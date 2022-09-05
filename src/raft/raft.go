@@ -187,6 +187,7 @@ func (rf *Raft) Start(command interface{}) (int, int, bool) {
 // should call killed() to check whether it should stop.
 //
 func (rf *Raft) Kill() {
+	rf.Debug(dHeartBeat, "Killing Self %d", rf.isLeader)
 	atomic.StoreInt32(&rf.dead, 1)
 	// Your code here, if desired.
 }

@@ -50,8 +50,8 @@ func (b *TAtomBool) Get() bool {
 
 func RandIntUtil() int {
 	min := 300
-	max := 500
-
+	max := 600
+	rand.Seed(time.Now().UnixNano())
 	val := rand.Intn(max-min) + min
 
 	return val

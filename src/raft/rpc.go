@@ -1,7 +1,6 @@
 package raft
 
 import (
-	"fmt"
 	"time"
 )
 
@@ -11,7 +10,7 @@ func (rf *Raft) RequestVote(args *RequestVoteArgs, reply *RequestVoteReply) {
 	if args.Term < rf.currentTerm {
 		reply.Term = rf.currentTerm
 		reply.VoteGranted = false
-	} else if args.Term == rf.currentTerm && rf.votedFor == -1 {
+	} else if args.Term == rf.currentTerm && rf.votedFor == -1 && !rf.isLeader {
 		rf.votedFor = args.CandidateId
 		reply.VoteGranted = true
 		rf.electionTimer = time.Now()
@@ -22,7 +21,6 @@ func (rf *Raft) RequestVote(args *RequestVoteArgs, reply *RequestVoteReply) {
 			rf.election_started.Set(false)
 		} else if rf.isLeader {
 			rf.isLeader = false
-			fmt.Println("Stepping Down")
 		}
 		rf.currentTerm = args.Term
 		rf.votedFor = args.CandidateId
@@ -42,6 +40,8 @@ func (rf *Raft) AppendRPC(args *AppendRPCArgs, reply *AppendRPCReply) {
 	} else if args.Term >= rf.currentTerm {
 		// if candidate -> follower
 		if rf.election_started.Get() {
+			rf.Debug(dCanidate, "Stopping Election Term %d Server %d", rf.currentTerm, rf.me)
+			rf.votedFor = -1
 			rf.stop_election <- true
 			rf.election_started.Set(false)
 			reply.Success = true
