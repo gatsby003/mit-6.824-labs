@@ -1,0 +1,529 @@
+2022/09/06 23:36:54 000003 FOLLOWER Starting Election for Server 0 Term 1
+2022/09/06 23:36:54 000003 FOLLOWER Starting Election for Server 1 Term 1
+Test (2A): initial election ...
+2022/09/06 23:36:54 000006 FOLLOWER Starting Election for Server 2 Term 1
+2022/09/06 23:36:54 002394 CANDIDATE Election Timeout for Server 1 Term 1
+2022/09/06 23:36:54 002399 FOLLOWER server 1 voted for 2 for term 1
+2022/09/06 23:36:54 002395 LEADER Election won sending heartbeats Server 2 Term 1
+2022/09/06 23:36:54 002400 LEADER Append RPC successful on server 1 by 2 for term : 1
+2022/09/06 23:36:54 002401 LEADER Append RPC successful on server 0 by 2 for term : 1
+2022/09/06 23:36:54 003393 LEADER Append RPC successful on server 1 by 2 for term : 1
+2022/09/06 23:36:54 003394 LEADER Append RPC successful on server 0 by 2 for term : 1
+2022/09/06 23:36:54 004403 LEADER Append RPC successful on server 1 by 2 for term : 1
+2022/09/06 23:36:54 004403 LEADER Append RPC successful on server 0 by 2 for term : 1
+2022/09/06 23:36:54 005417 LEADER Append RPC successful on server 1 by 2 for term : 1
+2022/09/06 23:36:54 005419 LEADER Append RPC successful on server 0 by 2 for term : 1
+2022/09/06 23:36:55 006439 LEADER Append RPC successful on server 1 by 2 for term : 1
+2022/09/06 23:36:55 006442 LEADER Append RPC successful on server 0 by 2 for term : 1
+2022/09/06 23:36:55 007439 LEADER Append RPC successful on server 0 by 2 for term : 1
+2022/09/06 23:36:55 007441 LEADER Append RPC successful on server 1 by 2 for term : 1
+2022/09/06 23:36:55 008460 LEADER Append RPC successful on server 0 by 2 for term : 1
+2022/09/06 23:36:55 008462 LEADER Append RPC successful on server 1 by 2 for term : 1
+2022/09/06 23:36:55 009470 LEADER Append RPC successful on server 0 by 2 for term : 1
+2022/09/06 23:36:55 009473 LEADER Append RPC successful on server 1 by 2 for term : 1
+2022/09/06 23:36:55 010474 LEADER Append RPC successful on server 0 by 2 for term : 1
+2022/09/06 23:36:55 010476 LEADER Append RPC successful on server 1 by 2 for term : 1
+2022/09/06 23:36:55 011491 LEADER Append RPC successful on server 1 by 2 for term : 1
+2022/09/06 23:36:55 011494 LEADER Append RPC successful on server 0 by 2 for term : 1
+2022/09/06 23:36:55 012504 LEADER Append RPC successful on server 0 by 2 for term : 1
+2022/09/06 23:36:55 012506 LEADER Append RPC successful on server 1 by 2 for term : 1
+2022/09/06 23:36:55 013506 LEADER Append RPC successful on server 1 by 2 for term : 1
+2022/09/06 23:36:55 013508 LEADER Append RPC successful on server 0 by 2 for term : 1
+2022/09/06 23:36:55 014524 LEADER Append RPC successful on server 1 by 2 for term : 1
+2022/09/06 23:36:55 014527 LEADER Append RPC successful on server 0 by 2 for term : 1
+2022/09/06 23:36:55 015535 LEADER Append RPC successful on server 1 by 2 for term : 1
+2022/09/06 23:36:55 015538 LEADER Append RPC successful on server 0 by 2 for term : 1
+2022/09/06 23:36:56 016545 LEADER Append RPC successful on server 1 by 2 for term : 1
+2022/09/06 23:36:56 016548 LEADER Append RPC successful on server 0 by 2 for term : 1
+2022/09/06 23:36:56 017557 LEADER Append RPC successful on server 1 by 2 for term : 1
+2022/09/06 23:36:56 017560 LEADER Append RPC successful on server 0 by 2 for term : 1
+2022/09/06 23:36:56 018567 LEADER Append RPC successful on server 1 by 2 for term : 1
+2022/09/06 23:36:56 018570 LEADER Append RPC successful on server 0 by 2 for term : 1
+2022/09/06 23:36:56 019570 LEADER Append RPC successful on server 0 by 2 for term : 1
+2022/09/06 23:36:56 019572 LEADER Append RPC successful on server 1 by 2 for term : 1
+2022/09/06 23:36:56 020584 LEADER Append RPC successful on server 0 by 2 for term : 1
+2022/09/06 23:36:56 020586 LEADER Append RPC successful on server 1 by 2 for term : 1
+2022/09/06 23:36:56 021590 LEADER Append RPC successful on server 1 by 2 for term : 1
+2022/09/06 23:36:56 021593 LEADER Append RPC successful on server 0 by 2 for term : 1
+2022/09/06 23:36:56 022606 LEADER Append RPC successful on server 0 by 2 for term : 1
+2022/09/06 23:36:56 022608 LEADER Append RPC successful on server 1 by 2 for term : 1
+2022/09/06 23:36:56 023607 LEADER Append RPC successful on server 0 by 2 for term : 1
+2022/09/06 23:36:56 023610 LEADER Append RPC successful on server 1 by 2 for term : 1
+2022/09/06 23:36:56 024626 LEADER Append RPC successful on server 0 by 2 for term : 1
+2022/09/06 23:36:56 024629 LEADER Append RPC successful on server 1 by 2 for term : 1
+2022/09/06 23:36:56 025630 LEADER Append RPC successful on server 1 by 2 for term : 1
+2022/09/06 23:36:56 025632 LEADER Append RPC successful on server 0 by 2 for term : 1
+2022/09/06 23:36:57 026629 LEADER Append RPC successful on server 1 by 2 for term : 1
+2022/09/06 23:36:57 026630 LEADER Append RPC successful on server 0 by 2 for term : 1
+2022/09/06 23:36:57 027646 LEADER Append RPC successful on server 1 by 2 for term : 1
+2022/09/06 23:36:57 027647 LEADER Append RPC successful on server 0 by 2 for term : 1
+2022/09/06 23:36:57 028657 LEADER Append RPC successful on server 0 by 2 for term : 1
+2022/09/06 23:36:57 028659 LEADER Append RPC successful on server 1 by 2 for term : 1
+2022/09/06 23:36:57 029667 LEADER Append RPC successful on server 0 by 2 for term : 1
+2022/09/06 23:36:57 029669 LEADER Append RPC successful on server 1 by 2 for term : 1
+  ... Passed --   3.0  3  808   98624    0
+2022/09/06 23:36:57 030202 HEARTBEAT Killing Self %!d(bool=false)
+2022/09/06 23:36:57 030194 HEARTBEAT Killing Self %!d(bool=false)
+2022/09/06 23:36:57 030188 HEARTBEAT Killing Self %!d(bool=true)
+2022/09/06 23:36:57 000002 FOLLOWER Starting Election for Server 0 Term 1
+2022/09/06 23:36:57 000002 FOLLOWER Starting Election for Server 1 Term 1
+Test (2A): election after network failure ...
+2022/09/06 23:36:57 000007 FOLLOWER Starting Election for Server 2 Term 1
+2022/09/06 23:36:57 003062 CANDIDATE Election Timeout for Server 1 Term 1
+2022/09/06 23:36:57 003068 CANDIDATE Election Timeout for Server 0 Term 1
+2022/09/06 23:36:57 003070 FOLLOWER server 0 voted for 2 for term 1
+2022/09/06 23:36:57 003066 FOLLOWER server 1 voted for 2 for term 1
+2022/09/06 23:36:57 003064 LEADER Election won sending heartbeats Server 2 Term 1
+2022/09/06 23:36:57 003068 LEADER Append RPC successful on server 0 by 2 for term : 1
+2022/09/06 23:36:57 003069 LEADER Append RPC successful on server 1 by 2 for term : 1
+2022/09/06 23:36:57 003217 LEADER Append RPC successful on server 1 by 2 for term : 1
+2022/09/06 23:36:57 003218 LEADER Append RPC successful on server 0 by 2 for term : 1
+2022/09/06 23:36:57 004229 LEADER Append RPC successful on server 0 by 2 for term : 1
+2022/09/06 23:36:57 004230 LEADER Append RPC successful on server 1 by 2 for term : 1
+2022/09/06 23:36:58 007088 FOLLOWER Starting Election for Server 1 Term 2
+2022/09/06 23:36:58 007093 FOLLOWER Starting Election for Server 0 Term 2
+2022/09/06 23:36:58 010109 CANDIDATE Election Timeout for Server 0 Term 2
+2022/09/06 23:36:58 010112 FOLLOWER server 0 voted for 1 for term 2
+2022/09/06 23:36:58 010109 LEADER Election won sending heartbeats Server 1 Term 2
+2022/09/06 23:36:58 010113 LEADER Append RPC successful on server 0 by 1 for term : 2
+2022/09/06 23:36:58 010254 LEADER Append RPC successful on server 0 by 1 for term : 2
+2022/09/06 23:36:58 011268 LEADER Append RPC successful on server 0 by 1 for term : 2
+2022/09/06 23:36:58 012279 LEADER Append RPC successful on server 0 by 1 for term : 2
+2022/09/06 23:36:58 013293 LEADER Append RPC successful on server 0 by 1 for term : 2
+2022/09/06 23:36:58 014312 LEADER Append RPC successful on server 0 by 1 for term : 2
+2022/09/06 23:36:58 015333 LEADER Append RPC successful on server 0 by 1 for term : 2
+2022/09/06 23:36:59 016330 LEADER Stepping Down as leader 2 new term:  2 old term: 1
+2022/09/06 23:36:59 016342 LEADER Append RPC successful on server 0 by 1 for term : 2
+2022/09/06 23:36:59 016344 LEADER Append RPC successful on server 2 by 1 for term : 2
+2022/09/06 23:36:59 017341 LEADER Append RPC successful on server 2 by 1 for term : 2
+2022/09/06 23:36:59 017342 LEADER Append RPC successful on server 0 by 1 for term : 2
+2022/09/06 23:36:59 018350 LEADER Append RPC successful on server 2 by 1 for term : 2
+2022/09/06 23:36:59 018352 LEADER Append RPC successful on server 0 by 1 for term : 2
+2022/09/06 23:36:59 019365 LEADER Append RPC successful on server 0 by 1 for term : 2
+2022/09/06 23:36:59 019368 LEADER Append RPC successful on server 2 by 1 for term : 2
+2022/09/06 23:36:59 022223 FOLLOWER Starting Election for Server 0 Term 3
+2022/09/06 23:36:59 023385 FOLLOWER Starting Election for Server 2 Term 3
+2022/09/06 23:36:59 025247 CANDIDATE Election Timeout for Server 0 Term 3
+2022/09/06 23:37:00 027424 CANDIDATE Election Timeout for Server 2 Term 3
+2022/09/06 23:37:00 028263 FOLLOWER Starting Election for Server 0 Term 4
+2022/09/06 23:37:00 031289 CANDIDATE Election Timeout for Server 0 Term 4
+2022/09/06 23:37:00 031463 FOLLOWER Starting Election for Server 2 Term 4
+2022/09/06 23:37:00 034321 FOLLOWER Starting Election for Server 0 Term 5
+2022/09/06 23:37:00 035489 CANDIDATE Election Timeout for Server 2 Term 4
+2022/09/06 23:37:01 037351 CANDIDATE Election Timeout for Server 0 Term 5
+2022/09/06 23:37:01 039532 FOLLOWER Starting Election for Server 2 Term 5
+2022/09/06 23:37:01 040385 FOLLOWER Starting Election for Server 0 Term 6
+2022/09/06 23:37:01 040388 CANDIDATE Stopping Election Server 2 since term is lower New Term 6 Old Term 5
+2022/09/06 23:37:01 040399 FOLLOWER server 2 voted for 0 for term 6
+2022/09/06 23:37:01 040413 LEADER Election won sending heartbeats Server 0 Term 6
+2022/09/06 23:37:01 040425 LEADER Append RPC successful on server 2 by 0 for term : 6
+2022/09/06 23:37:01 041408 LEADER Append RPC successful on server 2 by 0 for term : 6
+2022/09/06 23:37:01 042432 LEADER Append RPC successful on server 2 by 0 for term : 6
+2022/09/06 23:37:01 043434 LEADER Append RPC successful on server 2 by 0 for term : 6
+2022/09/06 23:37:01 044439 LEADER Append RPC successful on server 2 by 0 for term : 6
+2022/09/06 23:37:01 045426 LEADER Stepping Down as leader 1 new term:  6 old term: 2
+2022/09/06 23:37:01 045434 LEADER Append RPC successful on server 2 by 0 for term : 6
+2022/09/06 23:37:01 045436 LEADER Append RPC successful on server 1 by 0 for term : 6
+2022/09/06 23:37:02 046447 LEADER Append RPC successful on server 2 by 0 for term : 6
+2022/09/06 23:37:02 046449 LEADER Append RPC successful on server 1 by 0 for term : 6
+2022/09/06 23:37:02 047461 LEADER Append RPC successful on server 2 by 0 for term : 6
+2022/09/06 23:37:02 047463 LEADER Append RPC successful on server 1 by 0 for term : 6
+2022/09/06 23:37:02 048469 LEADER Append RPC successful on server 2 by 0 for term : 6
+2022/09/06 23:37:02 048471 LEADER Append RPC successful on server 1 by 0 for term : 6
+2022/09/06 23:37:02 049470 LEADER Append RPC successful on server 2 by 0 for term : 6
+2022/09/06 23:37:02 049471 LEADER Append RPC successful on server 1 by 0 for term : 6
+  ... Passed --   4.9  3 2962  355708    0
+2022/09/06 23:37:02 049478 HEARTBEAT Killing Self %!d(bool=true)
+2022/09/06 23:37:02 049474 HEARTBEAT Killing Self %!d(bool=false)
+2022/09/06 23:37:02 049471 HEARTBEAT Killing Self %!d(bool=false)
+2022/09/06 23:37:02 000001 FOLLOWER Starting Election for Server 0 Term 1
+2022/09/06 23:37:02 000004 FOLLOWER Starting Election for Server 1 Term 1
+2022/09/06 23:37:02 000002 FOLLOWER Starting Election for Server 2 Term 1
+Test (2A): multiple elections ...
+2022/09/06 23:37:02 000014 FOLLOWER Starting Election for Server 3 Term 1
+2022/09/06 23:37:02 000012 FOLLOWER Starting Election for Server 4 Term 1
+2022/09/06 23:37:02 000010 FOLLOWER Starting Election for Server 5 Term 1
+2022/09/06 23:37:02 000008 FOLLOWER Starting Election for Server 6 Term 1
+2022/09/06 23:37:02 002734 CANDIDATE Election Timeout for Server 5 Term 1
+2022/09/06 23:37:02 002992 FOLLOWER server 5 voted for 1 for term 1
+2022/09/06 23:37:02 003012 CANDIDATE Election Timeout for Server 3 Term 1
+2022/09/06 23:37:02 003008 CANDIDATE Election Timeout for Server 4 Term 1
+2022/09/06 23:37:02 003022 FOLLOWER server 3 voted for 4 for term 1
+2022/09/06 23:37:02 003023 FOLLOWER server 4 voted for 5 for term 1
+2022/09/06 23:37:02 003232 CANDIDATE Election Timeout for Server 1 Term 1
+2022/09/06 23:37:02 003234 FOLLOWER server 1 voted for 6 for term 1
+2022/09/06 23:37:02 003901 CANDIDATE Election Timeout for Server 6 Term 1
+2022/09/06 23:37:02 003915 FOLLOWER server 6 voted for 0 for term 1
+2022/09/06 23:37:02 004227 CANDIDATE Election Timeout for Server 2 Term 1
+2022/09/06 23:37:02 004237 CANDIDATE Election Timeout for Server 0 Term 1
+2022/09/06 23:37:02 005917 FOLLOWER Starting Election for Server 5 Term 2
+2022/09/06 23:37:02 005944 FOLLOWER server 0 voted for 5 for term 2
+2022/09/06 23:37:02 005929 FOLLOWER server 4 voted for 5 for term 2
+2022/09/06 23:37:02 005951 FOLLOWER server 0 voted for 5 for term 2
+2022/09/06 23:37:02 005943 FOLLOWER server 2 voted for 5 for term 2
+2022/09/06 23:37:02 005952 FOLLOWER server 2 voted for 5 for term 2
+2022/09/06 23:37:02 005946 FOLLOWER server 4 voted for 5 for term 2
+2022/09/06 23:37:02 005952 LEADER Election won sending heartbeats Server 5 Term 2
+2022/09/06 23:37:02 005959 LEADER Append RPC successful on server 0 by 5 for term : 2
+2022/09/06 23:37:02 005960 LEADER Append RPC successful on server 1 by 5 for term : 2
+2022/09/06 23:37:02 005961 LEADER Append RPC successful on server 3 by 5 for term : 2
+2022/09/06 23:37:02 005963 LEADER Append RPC successful on server 2 by 5 for term : 2
+2022/09/06 23:37:02 005963 LEADER Append RPC successful on server 6 by 5 for term : 2
+2022/09/06 23:37:02 005965 LEADER Append RPC successful on server 4 by 5 for term : 2
+2022/09/06 23:37:02 006025 LEADER Append RPC successful on server 0 by 5 for term : 2
+2022/09/06 23:37:02 006026 LEADER Append RPC successful on server 6 by 5 for term : 2
+2022/09/06 23:37:02 006026 LEADER Append RPC successful on server 1 by 5 for term : 2
+2022/09/06 23:37:02 006028 LEADER Append RPC successful on server 3 by 5 for term : 2
+2022/09/06 23:37:02 006030 LEADER Append RPC successful on server 4 by 5 for term : 2
+2022/09/06 23:37:02 006030 LEADER Append RPC successful on server 2 by 5 for term : 2
+2022/09/06 23:37:03 007036 LEADER Append RPC successful on server 6 by 5 for term : 2
+2022/09/06 23:37:03 007037 LEADER Append RPC successful on server 1 by 5 for term : 2
+2022/09/06 23:37:03 007038 LEADER Append RPC successful on server 0 by 5 for term : 2
+2022/09/06 23:37:03 007039 LEADER Append RPC successful on server 3 by 5 for term : 2
+2022/09/06 23:37:03 007042 LEADER Append RPC successful on server 2 by 5 for term : 2
+2022/09/06 23:37:03 007042 LEADER Append RPC successful on server 4 by 5 for term : 2
+2022/09/06 23:37:03 008047 LEADER Append RPC successful on server 1 by 5 for term : 2
+2022/09/06 23:37:03 008048 LEADER Append RPC successful on server 2 by 5 for term : 2
+2022/09/06 23:37:03 008049 LEADER Append RPC successful on server 6 by 5 for term : 2
+2022/09/06 23:37:03 008052 LEADER Append RPC successful on server 3 by 5 for term : 2
+2022/09/06 23:37:03 008055 LEADER Append RPC successful on server 4 by 5 for term : 2
+2022/09/06 23:37:03 008056 LEADER Append RPC successful on server 0 by 5 for term : 2
+2022/09/06 23:37:03 009059 LEADER Append RPC successful on server 3 by 5 for term : 2
+2022/09/06 23:37:03 009061 LEADER Append RPC successful on server 1 by 5 for term : 2
+2022/09/06 23:37:03 009061 LEADER Append RPC successful on server 6 by 5 for term : 2
+2022/09/06 23:37:03 009066 LEADER Append RPC successful on server 0 by 5 for term : 2
+2022/09/06 23:37:03 009070 LEADER Append RPC successful on server 2 by 5 for term : 2
+2022/09/06 23:37:03 009071 LEADER Append RPC successful on server 4 by 5 for term : 2
+2022/09/06 23:37:03 010063 LEADER Append RPC successful on server 1 by 5 for term : 2
+2022/09/06 23:37:03 010065 LEADER Append RPC successful on server 2 by 5 for term : 2
+2022/09/06 23:37:03 010067 LEADER Append RPC successful on server 6 by 5 for term : 2
+2022/09/06 23:37:03 010068 LEADER Append RPC successful on server 4 by 5 for term : 2
+2022/09/06 23:37:03 010074 LEADER Append RPC successful on server 0 by 5 for term : 2
+2022/09/06 23:37:03 010075 LEADER Append RPC successful on server 3 by 5 for term : 2
+MULTIPLE TESTS ITER 12022/09/06 23:37:03 013085 FOLLOWER Starting Election for Server 3 Term 3
+2022/09/06 23:37:03 013081 FOLLOWER Starting Election for Server 4 Term 3
+2022/09/06 23:37:03 013282 FOLLOWER Starting Election for Server 1 Term 4
+2022/09/06 23:37:03 013357 FOLLOWER server 4 voted for 1 for term 4
+2022/09/06 23:37:03 013361 FOLLOWER server 3 voted for 1 for term 4
+2022/09/06 23:37:03 013979 FOLLOWER Starting Election for Server 6 Term 5
+2022/09/06 23:37:03 014008 CANDIDATE Stopping Election Server 1 since term is lower New Term 5 Old Term 4
+2022/09/06 23:37:03 014015 FOLLOWER server 1 voted for 6 for term 5
+2022/09/06 23:37:03 014289 FOLLOWER Starting Election for Server 0 Term 6
+2022/09/06 23:37:03 014278 FOLLOWER server 6 voted for 0 for term 6
+2022/09/06 23:37:03 014347 FOLLOWER Starting Election for Server 2 Term 3
+2022/09/06 23:37:03 016157 FOLLOWER Starting Election for Server 4 Term 7
+2022/09/06 23:37:03 016195 FOLLOWER server 0 voted for 4 for term 7
+2022/09/06 23:37:04 017305 FOLLOWER Starting Election for Server 3 Term 8
+2022/09/06 23:37:04 017532 FOLLOWER Starting Election for Server 1 Term 8
+2022/09/06 23:37:04 017528 FOLLOWER server 4 voted for 3 for term 8
+2022/09/06 23:37:04 018170 FOLLOWER Starting Election for Server 6 Term 9
+2022/09/06 23:37:04 018238 FOLLOWER server 1 voted for 6 for term 9
+2022/09/06 23:37:04 018236 FOLLOWER server 3 voted for 6 for term 9
+2022/09/06 23:37:04 018563 CANDIDATE Election Timeout for Server 2 Term 3
+2022/09/06 23:37:04 020295 FOLLOWER Starting Election for Server 0 Term 10
+2022/09/06 23:37:04 020307 FOLLOWER server 6 voted for 0 for term 10
+2022/09/06 23:37:04 020357 FOLLOWER Starting Election for Server 4 Term 11
+2022/09/06 23:37:04 020394 FOLLOWER server 0 voted for 4 for term 11
+2022/09/06 23:37:04 021363 FOLLOWER Starting Election for Server 3 Term 12
+2022/09/06 23:37:04 021375 FOLLOWER server 4 voted for 3 for term 12
+2022/09/06 23:37:04 021535 FOLLOWER Starting Election for Server 1 Term 13
+2022/09/06 23:37:04 021543 FOLLOWER server 3 voted for 1 for term 13
+2022/09/06 23:37:04 022595 FOLLOWER Starting Election for Server 2 Term 4
+2022/09/06 23:37:04 024180 FOLLOWER Starting Election for Server 6 Term 14
+2022/09/06 23:37:04 024358 FOLLOWER Starting Election for Server 0 Term 14
+2022/09/06 23:37:04 024443 FOLLOWER Starting Election for Server 4 Term 14
+2022/09/06 23:37:04 024574 FOLLOWER Starting Election for Server 3 Term 14
+2022/09/06 23:37:04 024707 CANDIDATE Election Timeout for Server 1 Term 13
+2022/09/06 23:37:04 024724 FOLLOWER server 1 voted for 6 for term 14
+2022/09/06 23:37:04 025003 FOLLOWER server 1 voted for 6 for term 14
+2022/09/06 23:37:05 027075 CANDIDATE Election Timeout for Server 2 Term 4
+2022/09/06 23:37:05 027600 CANDIDATE Election Timeout for Server 6 Term 14
+2022/09/06 23:37:05 027602 FOLLOWER server 6 voted for 0 for term 14
+2022/09/06 23:37:05 027654 CANDIDATE Election Timeout for Server 3 Term 14
+2022/09/06 23:37:05 027667 FOLLOWER server 3 voted for 0 for term 14
+2022/09/06 23:37:05 027889 CANDIDATE Election Timeout for Server 4 Term 14
+2022/09/06 23:37:05 027897 FOLLOWER server 4 voted for 0 for term 14
+2022/09/06 23:37:05 027918 LEADER Election won sending heartbeats Server 0 Term 14
+2022/09/06 23:37:05 027923 LEADER Append RPC successful on server 1 by 0 for term : 14
+2022/09/06 23:37:05 027927 LEADER Append RPC successful on server 4 by 0 for term : 14
+2022/09/06 23:37:05 027929 LEADER Append RPC successful on server 3 by 0 for term : 14
+2022/09/06 23:37:05 027933 LEADER Append RPC successful on server 6 by 0 for term : 14
+2022/09/06 23:37:05 028093 LEADER Append RPC successful on server 1 by 0 for term : 14
+2022/09/06 23:37:05 028094 LEADER Append RPC successful on server 6 by 0 for term : 14
+2022/09/06 23:37:05 028094 LEADER Append RPC successful on server 3 by 0 for term : 14
+2022/09/06 23:37:05 028096 LEADER Append RPC successful on server 4 by 0 for term : 14
+2022/09/06 23:37:05 029108 LEADER Append RPC successful on server 6 by 0 for term : 14
+2022/09/06 23:37:05 029109 LEADER Append RPC successful on server 1 by 0 for term : 14
+2022/09/06 23:37:05 029109 LEADER Append RPC successful on server 3 by 0 for term : 14
+2022/09/06 23:37:05 029110 LEADER Append RPC successful on server 4 by 0 for term : 14
+2022/09/06 23:37:05 030122 LEADER Append RPC successful on server 6 by 0 for term : 14
+2022/09/06 23:37:05 030123 LEADER Append RPC successful on server 3 by 0 for term : 14
+2022/09/06 23:37:05 030124 LEADER Append RPC successful on server 1 by 0 for term : 14
+2022/09/06 23:37:05 030125 LEADER Append RPC successful on server 4 by 0 for term : 14
+2022/09/06 23:37:05 031109 FOLLOWER Starting Election for Server 2 Term 5
+2022/09/06 23:37:05 031137 LEADER Append RPC successful on server 6 by 0 for term : 14
+2022/09/06 23:37:05 031138 LEADER Append RPC successful on server 3 by 0 for term : 14
+2022/09/06 23:37:05 031139 LEADER Append RPC successful on server 1 by 0 for term : 14
+2022/09/06 23:37:05 031146 LEADER Append RPC successful on server 4 by 0 for term : 14
+MULTIPLE TESTS ITER 22022/09/06 23:37:05 032135 LEADER Append RPC successful on server 1 by 0 for term : 14
+2022/09/06 23:37:05 032136 LEADER Append RPC successful on server 2 by 0 for term : 14
+2022/09/06 23:37:05 032136 LEADER Append RPC successful on server 4 by 0 for term : 14
+2022/09/06 23:37:05 033148 LEADER Append RPC successful on server 2 by 0 for term : 14
+2022/09/06 23:37:05 033149 LEADER Append RPC successful on server 4 by 0 for term : 14
+2022/09/06 23:37:05 033149 LEADER Append RPC successful on server 1 by 0 for term : 14
+2022/09/06 23:37:05 034156 LEADER Append RPC successful on server 1 by 0 for term : 14
+2022/09/06 23:37:05 034157 LEADER Append RPC successful on server 2 by 0 for term : 14
+2022/09/06 23:37:05 034159 LEADER Append RPC successful on server 4 by 0 for term : 14
+2022/09/06 23:37:05 034672 FOLLOWER Starting Election for Server 3 Term 15
+2022/09/06 23:37:05 034662 FOLLOWER Starting Election for Server 6 Term 15
+2022/09/06 23:37:05 035163 LEADER Append RPC successful on server 1 by 0 for term : 14
+2022/09/06 23:37:05 035166 LEADER Append RPC successful on server 2 by 0 for term : 14
+2022/09/06 23:37:05 035167 LEADER Append RPC successful on server 4 by 0 for term : 14
+2022/09/06 23:37:05 036169 LEADER Append RPC successful on server 1 by 0 for term : 14
+2022/09/06 23:37:05 036170 LEADER Append RPC successful on server 4 by 0 for term : 14
+2022/09/06 23:37:05 036173 LEADER Append RPC successful on server 2 by 0 for term : 14
+MULTIPLE TESTS ITER 32022/09/06 23:37:06 037253 CANDIDATE Election Timeout for Server 5 Term 14
+2022/09/06 23:37:06 037694 CANDIDATE Election Timeout for Server 3 Term 15
+2022/09/06 23:37:06 037683 CANDIDATE Election Timeout for Server 6 Term 15
+2022/09/06 23:37:06 038975 FOLLOWER Starting Election for Server 4 Term 15
+2022/09/06 23:37:06 038993 FOLLOWER server 2 voted for 4 for term 15
+2022/09/06 23:37:06 038990 FOLLOWER server 3 voted for 4 for term 15
+2022/09/06 23:37:06 039001 FOLLOWER server 2 voted for 4 for term 15
+2022/09/06 23:37:06 038992 FOLLOWER server 5 voted for 4 for term 15
+2022/09/06 23:37:06 038999 FOLLOWER server 5 voted for 4 for term 15
+2022/09/06 23:37:06 039009 LEADER Election won sending heartbeats Server 4 Term 15
+2022/09/06 23:37:06 039017 LEADER Append RPC successful on server 1 by 4 for term : 15
+2022/09/06 23:37:06 039019 LEADER Append RPC successful on server 2 by 4 for term : 15
+2022/09/06 23:37:06 039019 LEADER Append RPC successful on server 3 by 4 for term : 15
+2022/09/06 23:37:06 039021 LEADER Append RPC successful on server 5 by 4 for term : 15
+2022/09/06 23:37:06 039516 LEADER Append RPC successful on server 1 by 4 for term : 15
+2022/09/06 23:37:06 039517 LEADER Append RPC successful on server 2 by 4 for term : 15
+2022/09/06 23:37:06 039517 LEADER Append RPC successful on server 3 by 4 for term : 15
+2022/09/06 23:37:06 039519 LEADER Append RPC successful on server 5 by 4 for term : 15
+2022/09/06 23:37:06 040525 LEADER Append RPC successful on server 3 by 4 for term : 15
+2022/09/06 23:37:06 040526 LEADER Append RPC successful on server 1 by 4 for term : 15
+2022/09/06 23:37:06 040526 LEADER Append RPC successful on server 2 by 4 for term : 15
+2022/09/06 23:37:06 040528 LEADER Append RPC successful on server 5 by 4 for term : 15
+2022/09/06 23:37:06 040698 FOLLOWER Starting Election for Server 6 Term 16
+MULTIPLE TESTS ITER 42022/09/06 23:37:06 041540 LEADER Stepping Down as leader 0 new term:  15 old term: 14
+2022/09/06 23:37:06 041525 LEADER Append RPC successful on server 0 by 4 for term : 16
+2022/09/06 23:37:06 041527 LEADER Append RPC successful on server 5 by 4 for term : 16
+2022/09/06 23:37:06 041528 LEADER Append RPC successful on server 3 by 4 for term : 16
+2022/09/06 23:37:06 042006 CANDIDATE Election Timeout for Server 4 Term 16
+2022/09/06 23:37:06 043207 FOLLOWER Starting Election for Server 1 Term 16
+2022/09/06 23:37:06 043721 CANDIDATE Election Timeout for Server 6 Term 16
+2022/09/06 23:37:06 044324 FOLLOWER Starting Election for Server 5 Term 16
+2022/09/06 23:37:06 044350 FOLLOWER server 0 voted for 5 for term 16
+2022/09/06 23:37:06 044333 FOLLOWER server 4 voted for 5 for term 16
+2022/09/06 23:37:06 044733 FOLLOWER Starting Election for Server 3 Term 16
+2022/09/06 23:37:06 044735 FOLLOWER server 6 voted for 3 for term 16
+2022/09/06 23:37:06 045212 FOLLOWER Starting Election for Server 2 Term 16
+2022/09/06 23:37:06 046379 CANDIDATE Election Timeout for Server 1 Term 16
+2022/09/06 23:37:07 047202 FOLLOWER Starting Election for Server 4 Term 17
+2022/09/06 23:37:07 047404 CANDIDATE Election Timeout for Server 5 Term 16
+2022/09/06 23:37:07 047831 FOLLOWER Starting Election for Server 6 Term 17
+2022/09/06 23:37:07 047847 FOLLOWER server 3 voted for 6 for term 17
+2022/09/06 23:37:07 047953 FOLLOWER server 5 voted for 6 for term 17
+2022/09/06 23:37:07 047959 FOLLOWER server 5 voted for 6 for term 17
+2022/09/06 23:37:07 048973 FOLLOWER Starting Election for Server 0 Term 18
+2022/09/06 23:37:07 049392 CANDIDATE Election Timeout for Server 2 Term 16
+2022/09/06 23:37:07 049398 FOLLOWER Starting Election for Server 1 Term 17
+2022/09/06 23:37:07 050206 CANDIDATE Election Timeout for Server 4 Term 17
+2022/09/06 23:37:07 050408 FOLLOWER Starting Election for Server 5 Term 18
+2022/09/06 23:37:07 051203 FOLLOWER Starting Election for Server 3 Term 19
+2022/09/06 23:37:07 051222 CANDIDATE Stopping Election Server 0 since term is lower New Term 19 Old Term 18
+2022/09/06 23:37:07 051203 CANDIDATE Stopping Election Server 5 since term is lower New Term 19 Old Term 18
+2022/09/06 23:37:07 051209 FOLLOWER server 4 voted for 3 for term 19
+2022/09/06 23:37:07 051218 FOLLOWER server 4 voted for 3 for term 19
+2022/09/06 23:37:07 051216 FOLLOWER server 5 voted for 3 for term 19
+2022/09/06 23:37:07 051215 FOLLOWER server 6 voted for 3 for term 19
+2022/09/06 23:37:07 051241 FOLLOWER server 0 voted for 3 for term 19
+2022/09/06 23:37:07 051233 LEADER Election won sending heartbeats Server 3 Term 19
+2022/09/06 23:37:07 051238 LEADER Append RPC successful on server 0 by 3 for term : 19
+2022/09/06 23:37:07 051238 LEADER Append RPC successful on server 4 by 3 for term : 19
+2022/09/06 23:37:07 051239 LEADER Append RPC successful on server 6 by 3 for term : 19
+2022/09/06 23:37:07 051241 LEADER Append RPC successful on server 5 by 3 for term : 19
+MULTIPLE TESTS ITER 52022/09/06 23:37:07 052219 LEADER Append RPC successful on server 6 by 3 for term : 19
+2022/09/06 23:37:07 052221 LEADER Append RPC successful on server 2 by 3 for term : 19
+2022/09/06 23:37:07 052222 LEADER Append RPC successful on server 5 by 3 for term : 19
+2022/09/06 23:37:07 052420 CANDIDATE Election Timeout for Server 1 Term 17
+2022/09/06 23:37:07 053237 LEADER Append RPC successful on server 6 by 3 for term : 19
+2022/09/06 23:37:07 053237 LEADER Append RPC successful on server 2 by 3 for term : 19
+2022/09/06 23:37:07 053238 LEADER Append RPC successful on server 5 by 3 for term : 19
+2022/09/06 23:37:07 054226 FOLLOWER Starting Election for Server 4 Term 20
+2022/09/06 23:37:07 054247 LEADER Append RPC successful on server 6 by 3 for term : 19
+2022/09/06 23:37:07 054249 LEADER Append RPC successful on server 5 by 3 for term : 19
+2022/09/06 23:37:07 054250 LEADER Append RPC successful on server 2 by 3 for term : 19
+2022/09/06 23:37:07 055262 LEADER Append RPC successful on server 2 by 3 for term : 19
+2022/09/06 23:37:07 055265 LEADER Append RPC successful on server 6 by 3 for term : 19
+2022/09/06 23:37:07 055266 LEADER Append RPC successful on server 5 by 3 for term : 19
+2022/09/06 23:37:07 055445 FOLLOWER Starting Election for Server 1 Term 18
+2022/09/06 23:37:07 055997 FOLLOWER Starting Election for Server 0 Term 20
+2022/09/06 23:37:07 056248 LEADER Append RPC successful on server 6 by 3 for term : 19
+2022/09/06 23:37:07 056249 LEADER Append RPC successful on server 2 by 3 for term : 19
+2022/09/06 23:37:07 056250 LEADER Append RPC successful on server 5 by 3 for term : 19
+MULTIPLE TESTS ITER 62022/09/06 23:37:08 057248 CANDIDATE Election Timeout for Server 4 Term 20
+2022/09/06 23:37:08 059431 FOLLOWER Starting Election for Server 5 Term 20
+2022/09/06 23:37:08 059457 FOLLOWER server 1 voted for 5 for term 20
+2022/09/06 23:37:08 059453 FOLLOWER server 2 voted for 5 for term 20
+2022/09/06 23:37:08 059904 FOLLOWER Starting Election for Server 6 Term 20
+2022/09/06 23:37:08 060032 CANDIDATE Election Timeout for Server 0 Term 20
+2022/09/06 23:37:08 060044 FOLLOWER server 0 voted for 6 for term 20
+2022/09/06 23:37:08 060273 FOLLOWER Starting Election for Server 4 Term 21
+2022/09/06 23:37:08 062453 FOLLOWER Starting Election for Server 1 Term 21
+2022/09/06 23:37:08 062460 CANDIDATE Election Timeout for Server 5 Term 20
+2022/09/06 23:37:08 062463 FOLLOWER server 5 voted for 6 for term 20
+2022/09/06 23:37:08 062471 FOLLOWER server 6 voted for 1 for term 21
+2022/09/06 23:37:08 063286 CANDIDATE Election Timeout for Server 4 Term 21
+2022/09/06 23:37:08 063447 FOLLOWER Starting Election for Server 2 Term 22
+2022/09/06 23:37:08 063501 FOLLOWER server 1 voted for 2 for term 22
+2022/09/06 23:37:08 064038 FOLLOWER Starting Election for Server 0 Term 23
+2022/09/06 23:37:08 064036 CANDIDATE Stopping Election Server 2 since term is lower New Term 23 Old Term 22
+2022/09/06 23:37:08 065481 FOLLOWER Starting Election for Server 5 Term 23
+2022/09/06 23:37:08 065499 FOLLOWER server 2 voted for 5 for term 23
+2022/09/06 23:37:08 065920 FOLLOWER Starting Election for Server 6 Term 23
+2022/09/06 23:37:08 066288 FOLLOWER Starting Election for Server 4 Term 22
+2022/09/06 23:37:08 066501 FOLLOWER Starting Election for Server 1 Term 24
+2022/09/06 23:37:08 066521 CANDIDATE Stopping Election Server 0 since term is lower New Term 24 Old Term 23
+2022/09/06 23:37:08 066503 CANDIDATE Stopping Election Server 5 since term is lower New Term 24 Old Term 23
+2022/09/06 23:37:08 066525 FOLLOWER server 0 voted for 1 for term 24
+2022/09/06 23:37:08 066507 FOLLOWER server 5 voted for 1 for term 24
+2022/09/06 23:37:08 066506 FOLLOWER server 6 voted for 1 for term 24
+2022/09/06 23:37:08 066530 LEADER Election won sending heartbeats Server 1 Term 24
+2022/09/06 23:37:08 066534 LEADER Append RPC successful on server 0 by 1 for term : 24
+2022/09/06 23:37:08 066535 LEADER Append RPC successful on server 2 by 1 for term : 24
+2022/09/06 23:37:08 066535 LEADER Append RPC successful on server 5 by 1 for term : 24
+2022/09/06 23:37:08 066536 LEADER Append RPC successful on server 6 by 1 for term : 24
+2022/09/06 23:37:09 067298 LEADER Append RPC successful on server 6 by 1 for term : 24
+2022/09/06 23:37:09 067298 LEADER Append RPC successful on server 0 by 1 for term : 24
+2022/09/06 23:37:09 067299 LEADER Append RPC successful on server 5 by 1 for term : 24
+2022/09/06 23:37:09 067301 LEADER Append RPC successful on server 2 by 1 for term : 24
+2022/09/06 23:37:09 068307 LEADER Append RPC successful on server 0 by 1 for term : 24
+2022/09/06 23:37:09 068307 LEADER Append RPC successful on server 5 by 1 for term : 24
+2022/09/06 23:37:09 068308 LEADER Append RPC successful on server 6 by 1 for term : 24
+2022/09/06 23:37:09 068308 LEADER Append RPC successful on server 2 by 1 for term : 24
+2022/09/06 23:37:09 069290 CANDIDATE Election Timeout for Server 4 Term 22
+2022/09/06 23:37:09 069312 LEADER Append RPC successful on server 0 by 1 for term : 24
+2022/09/06 23:37:09 069313 LEADER Append RPC successful on server 2 by 1 for term : 24
+2022/09/06 23:37:09 069313 LEADER Append RPC successful on server 6 by 1 for term : 24
+2022/09/06 23:37:09 069317 LEADER Append RPC successful on server 5 by 1 for term : 24
+2022/09/06 23:37:09 070319 LEADER Append RPC successful on server 6 by 1 for term : 24
+2022/09/06 23:37:09 070321 LEADER Append RPC successful on server 0 by 1 for term : 24
+2022/09/06 23:37:09 070324 LEADER Append RPC successful on server 2 by 1 for term : 24
+2022/09/06 23:37:09 070330 LEADER Append RPC successful on server 5 by 1 for term : 24
+2022/09/06 23:37:09 071324 LEADER Append RPC successful on server 6 by 1 for term : 24
+2022/09/06 23:37:09 071329 LEADER Append RPC successful on server 0 by 1 for term : 24
+2022/09/06 23:37:09 071331 LEADER Append RPC successful on server 5 by 1 for term : 24
+2022/09/06 23:37:09 071332 LEADER Append RPC successful on server 2 by 1 for term : 24
+MULTIPLE TESTS ITER 72022/09/06 23:37:09 072298 FOLLOWER Starting Election for Server 4 Term 23
+2022/09/06 23:37:09 072324 LEADER Append RPC successful on server 6 by 1 for term : 24
+2022/09/06 23:37:09 072324 LEADER Append RPC successful on server 2 by 1 for term : 24
+2022/09/06 23:37:09 072326 LEADER Append RPC successful on server 5 by 1 for term : 24
+2022/09/06 23:37:09 073327 LEADER Append RPC successful on server 6 by 1 for term : 24
+2022/09/06 23:37:09 073329 LEADER Append RPC successful on server 5 by 1 for term : 24
+2022/09/06 23:37:09 073331 LEADER Append RPC successful on server 2 by 1 for term : 24
+2022/09/06 23:37:09 074330 LEADER Append RPC successful on server 6 by 1 for term : 24
+2022/09/06 23:37:09 074331 LEADER Append RPC successful on server 2 by 1 for term : 24
+2022/09/06 23:37:09 074332 LEADER Append RPC successful on server 5 by 1 for term : 24
+2022/09/06 23:37:09 075315 CANDIDATE Election Timeout for Server 4 Term 23
+2022/09/06 23:37:09 075348 LEADER Append RPC successful on server 6 by 1 for term : 24
+2022/09/06 23:37:09 075350 LEADER Append RPC successful on server 2 by 1 for term : 24
+2022/09/06 23:37:09 075355 LEADER Append RPC successful on server 5 by 1 for term : 24
+2022/09/06 23:37:09 076132 FOLLOWER Starting Election for Server 0 Term 25
+2022/09/06 23:37:09 076360 LEADER Append RPC successful on server 6 by 1 for term : 24
+2022/09/06 23:37:09 076361 LEADER Append RPC successful on server 2 by 1 for term : 24
+2022/09/06 23:37:09 076370 LEADER Append RPC successful on server 5 by 1 for term : 24
+MULTIPLE TESTS ITER 82022/09/06 23:37:10 078342 FOLLOWER Starting Election for Server 4 Term 24
+2022/09/06 23:37:10 079542 FOLLOWER Starting Election for Server 5 Term 25
+2022/09/06 23:37:10 080011 FOLLOWER Starting Election for Server 6 Term 25
+2022/09/06 23:37:10 080031 FOLLOWER server 4 voted for 6 for term 25
+2022/09/06 23:37:10 080160 CANDIDATE Election Timeout for Server 0 Term 25
+2022/09/06 23:37:10 080161 FOLLOWER server 0 voted for 6 for term 25
+2022/09/06 23:37:10 080553 FOLLOWER Starting Election for Server 2 Term 26
+2022/09/06 23:37:10 080547 CANDIDATE Stopping Election Server 6 since term is lower New Term 26 Old Term 25
+2022/09/06 23:37:10 080554 FOLLOWER server 6 voted for 2 for term 26
+2022/09/06 23:37:10 082551 CANDIDATE Election Timeout for Server 5 Term 25
+2022/09/06 23:37:10 083368 FOLLOWER Starting Election for Server 4 Term 27
+2022/09/06 23:37:10 083381 CANDIDATE Stopping Election Server 2 since term is lower New Term 27 Old Term 26
+2022/09/06 23:37:10 084014 FOLLOWER Starting Election for Server 6 Term 27
+2022/09/06 23:37:10 084042 FOLLOWER server 0 voted for 6 for term 27
+2022/09/06 23:37:10 084034 FOLLOWER server 2 voted for 6 for term 27
+2022/09/06 23:37:10 085553 FOLLOWER Starting Election for Server 5 Term 26
+2022/09/06 23:37:10 086371 CANDIDATE Election Timeout for Server 4 Term 27
+2022/09/06 23:37:10 086374 FOLLOWER server 4 voted for 6 for term 27
+2022/09/06 23:37:10 086371 LEADER Election won sending heartbeats Server 6 Term 27
+2022/09/06 23:37:10 086376 LEADER Append RPC successful on server 0 by 6 for term : 27
+2022/09/06 23:37:10 086381 LEADER Append RPC successful on server 2 by 6 for term : 27
+2022/09/06 23:37:10 086382 LEADER Append RPC successful on server 4 by 6 for term : 27
+MULTIPLE TESTS ITER 92022/09/06 23:37:11 086794 LEADER Stepping Down as leader 1 new term:  27 old term: 24
+2022/09/06 23:37:11 086775 LEADER Append RPC successful on server 0 by 6 for term : 27
+2022/09/06 23:37:11 086776 LEADER Append RPC successful on server 5 by 6 for term : 27
+2022/09/06 23:37:11 086777 LEADER Append RPC successful on server 1 by 6 for term : 27
+2022/09/06 23:37:11 087792 LEADER Append RPC successful on server 0 by 6 for term : 27
+2022/09/06 23:37:11 087793 LEADER Append RPC successful on server 5 by 6 for term : 27
+2022/09/06 23:37:11 087794 LEADER Append RPC successful on server 1 by 6 for term : 27
+2022/09/06 23:37:11 088806 LEADER Append RPC successful on server 5 by 6 for term : 27
+2022/09/06 23:37:11 088808 LEADER Append RPC successful on server 1 by 6 for term : 27
+2022/09/06 23:37:11 088809 LEADER Append RPC successful on server 0 by 6 for term : 27
+2022/09/06 23:37:11 089390 FOLLOWER Starting Election for Server 4 Term 28
+2022/09/06 23:37:11 089826 LEADER Append RPC successful on server 1 by 6 for term : 27
+2022/09/06 23:37:11 089829 LEADER Append RPC successful on server 5 by 6 for term : 27
+2022/09/06 23:37:11 089830 LEADER Append RPC successful on server 0 by 6 for term : 27
+2022/09/06 23:37:11 090589 FOLLOWER Starting Election for Server 2 Term 28
+2022/09/06 23:37:11 090824 LEADER Append RPC successful on server 5 by 6 for term : 27
+2022/09/06 23:37:11 090826 LEADER Append RPC successful on server 0 by 6 for term : 27
+2022/09/06 23:37:11 090828 LEADER Append RPC successful on server 1 by 6 for term : 27
+2022/09/06 23:37:11 091828 LEADER Append RPC successful on server 5 by 6 for term : 27
+2022/09/06 23:37:11 091829 LEADER Append RPC successful on server 0 by 6 for term : 27
+2022/09/06 23:37:11 091829 LEADER Append RPC successful on server 1 by 6 for term : 27
+2022/09/06 23:37:11 092410 CANDIDATE Election Timeout for Server 4 Term 28
+2022/09/06 23:37:11 092834 LEADER Append RPC successful on server 0 by 6 for term : 27
+2022/09/06 23:37:11 092834 LEADER Append RPC successful on server 5 by 6 for term : 27
+2022/09/06 23:37:11 092837 LEADER Append RPC successful on server 3 by 6 for term : 27
+2022/09/06 23:37:11 092840 LEADER Append RPC successful on server 1 by 6 for term : 28
+2022/09/06 23:37:11 093049 CANDIDATE Election Timeout for Server 6 Term 28
+2022/09/06 23:37:11 094619 CANDIDATE Election Timeout for Server 2 Term 28
+2022/09/06 23:37:11 095436 FOLLOWER Starting Election for Server 4 Term 29
+2022/09/06 23:37:11 095456 FOLLOWER server 1 voted for 4 for term 29
+2022/09/06 23:37:11 095452 FOLLOWER server 2 voted for 4 for term 29
+2022/09/06 23:37:11 095450 FOLLOWER server 3 voted for 4 for term 29
+2022/09/06 23:37:11 095619 FOLLOWER Starting Election for Server 5 Term 28
+2022/09/06 23:37:11 096066 FOLLOWER Starting Election for Server 6 Term 29
+2022/09/06 23:37:11 096098 FOLLOWER server 0 voted for 6 for term 29
+2022/09/06 23:37:12 098450 CANDIDATE Election Timeout for Server 4 Term 29
+2022/09/06 23:37:12 098455 FOLLOWER Starting Election for Server 3 Term 30
+2022/09/06 23:37:12 098637 FOLLOWER Starting Election for Server 5 Term 30
+2022/09/06 23:37:12 098654 FOLLOWER Starting Election for Server 1 Term 31
+2022/09/06 23:37:12 098661 CANDIDATE Stopping Election Server 3 since term is lower New Term 31 Old Term 30
+2022/09/06 23:37:12 099093 CANDIDATE Election Timeout for Server 6 Term 29
+2022/09/06 23:37:12 099659 FOLLOWER Starting Election for Server 2 Term 31
+2022/09/06 23:37:12 099671 FOLLOWER server 3 voted for 2 for term 31
+2022/09/06 23:37:12 099677 CANDIDATE Stopping Election Server 5 since term is lower New Term 31 Old Term 30
+2022/09/06 23:37:12 099674 FOLLOWER server 6 voted for 2 for term 31
+2022/09/06 23:37:12 099691 FOLLOWER server 4 voted for 2 for term 31
+2022/09/06 23:37:12 099702 FOLLOWER server 6 voted for 2 for term 31
+2022/09/06 23:37:12 099710 FOLLOWER server 4 voted for 2 for term 31
+2022/09/06 23:37:12 099713 FOLLOWER server 5 voted for 2 for term 31
+2022/09/06 23:37:12 099731 LEADER Election won sending heartbeats Server 2 Term 31
+2022/09/06 23:37:12 099747 LEADER Append RPC successful on server 4 by 2 for term : 31
+2022/09/06 23:37:12 099748 LEADER Append RPC successful on server 6 by 2 for term : 31
+2022/09/06 23:37:12 099749 LEADER Append RPC successful on server 3 by 2 for term : 31
+2022/09/06 23:37:12 099751 LEADER Append RPC successful on server 5 by 2 for term : 31
+2022/09/06 23:37:12 099755 LEADER Append RPC successful on server 0 by 2 for term : 31
+2022/09/06 23:37:12 099757 LEADER Append RPC successful on server 1 by 2 for term : 31
+2022/09/06 23:37:12 100486 LEADER Append RPC successful on server 1 by 2 for term : 31
+2022/09/06 23:37:12 100488 LEADER Append RPC successful on server 4 by 2 for term : 31
+2022/09/06 23:37:12 100489 LEADER Append RPC successful on server 3 by 2 for term : 31
+2022/09/06 23:37:12 100491 LEADER Append RPC successful on server 0 by 2 for term : 31
+2022/09/06 23:37:12 100494 LEADER Append RPC successful on server 6 by 2 for term : 31
+2022/09/06 23:37:12 100495 LEADER Append RPC successful on server 5 by 2 for term : 31
+  ... Passed --  10.1  7 15178 1816316    0
+2022/09/06 23:37:12 101069 HEARTBEAT Killing Self %!d(bool=false)
+2022/09/06 23:37:12 101066 HEARTBEAT Killing Self %!d(bool=false)
+2022/09/06 23:37:12 101062 HEARTBEAT Killing Self %!d(bool=true)
+2022/09/06 23:37:12 101058 HEARTBEAT Killing Self %!d(bool=false)
+2022/09/06 23:37:12 101055 HEARTBEAT Killing Self %!d(bool=false)
+2022/09/06 23:37:12 101052 HEARTBEAT Killing Self %!d(bool=false)
+2022/09/06 23:37:12 101050 HEARTBEAT Killing Self %!d(bool=false)
+PASS
+ok  	6.824/raft	18.518s

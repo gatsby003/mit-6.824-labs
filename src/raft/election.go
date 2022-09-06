@@ -48,8 +48,8 @@ func (rf *Raft) watch_majority(stop_seeking chan bool, votes *int32, majority in
 			v := atomic.LoadInt32(votes)
 			if v >= majority {
 				// election won , stop other seeking
+				rf.mu.Lock()
 				if term == rf.currentTerm && rf.election_started.Get() {
-					rf.mu.Lock()
 					rf.isLeader = true
 					for i := 0; i < len(rf.peers); i += 1 {
 						stop_seeking <- true
@@ -62,6 +62,8 @@ func (rf *Raft) watch_majority(stop_seeking chan bool, votes *int32, majority in
 					rf.Debug(dLeader, "Election won sending heartbeats Server %d Term %d", rf.me, rf.currentTerm)
 					rf.mu.Unlock()
 				} else {
+					rf.StopElection()
+					rf.mu.Unlock()
 					rf.Debug(dCanidate, "Edge Case")
 				}
 				return
@@ -84,7 +86,10 @@ func (rf *Raft) seekVote(vote_counter *int32, server_id int, term int, me int, s
 			res := RequestVoteReply{}
 			if rf.sendRequestVote(server_id, &req, &res) {
 				rf.mu.Lock()
-				if rf.election_started.Get() && rf.currentTerm == res.Term && res.VoteGranted {
+				if term != rf.currentTerm || !rf.election_started.Get() {
+					rf.mu.Unlock()
+					return
+				} else if rf.election_started.Get() && rf.currentTerm == res.Term && res.VoteGranted {
 					atomic.AddInt32(vote_counter, 1)
 					rf.mu.Unlock()
 					return
@@ -123,7 +128,6 @@ func (rf *Raft) StopElection() {
 }
 
 func (rf *Raft) StartElection() {
-	rf.Debug(dCanidate, "Starting Election for term %d", rf.currentTerm)
 	rf.election_started.Set(true)
 	rf.currentTerm += 1
 	rf.votedFor = rf.me
