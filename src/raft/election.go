@@ -12,7 +12,7 @@ func (rf *Raft) ticker() {
 			rf.handle_timeout()
 		}
 		rf.mu.Unlock()
-		time.Sleep(100 * time.Millisecond)
+		time.Sleep(time.Millisecond * time.Duration(RandIntUtil()))
 	}
 }
 
@@ -50,10 +50,8 @@ func (rf *Raft) watch_majority(stop_seeking chan bool, votes *int32, majority in
 				// election won , stop other seeking
 				rf.mu.Lock()
 				if term == rf.currentTerm && rf.election_started.Get() {
+					rf.StopElection()
 					rf.isLeader = true
-					for i := 0; i < len(rf.peers); i += 1 {
-						stop_seeking <- true
-					}
 					for i := 0; i < len(rf.peers); i += 1 {
 						if i != rf.me {
 							go rf.sendHeartBeat(i, rf.currentTerm)
@@ -93,13 +91,16 @@ func (rf *Raft) seekVote(vote_counter *int32, server_id int, term int, me int, s
 					atomic.AddInt32(vote_counter, 1)
 					rf.mu.Unlock()
 					return
-				} else if res.Term > rf.currentTerm {
+				} else if !res.VoteGranted && res.Term > rf.currentTerm {
 					rf.StopElection()
 					rf.currentTerm = res.Term
 					rf.mu.Unlock()
 					return
+				} else {
+					rf.Debug(dVote, "Didnt get vote : %d", res.VoteGranted)
+					rf.mu.Unlock()
+					return
 				}
-				rf.mu.Unlock()
 			}
 		}
 	}
@@ -113,10 +114,8 @@ func (rf *Raft) handle_timeout() {
 	if rf.election_started.Get() {
 		// election_started = false
 		rf.StopElection()
-		rf.Debug(dCanidate, "Election Timeout for Server %d Term %d", rf.me, rf.currentTerm)
 	} else {
 		rf.StartElection()
-		rf.Debug(dFollower, "Starting Election for Server %d Term %d", rf.me, rf.currentTerm)
 	}
 }
 
@@ -125,6 +124,7 @@ func (rf *Raft) StopElection() {
 	rf.votedFor = -1
 	rf.stop_election <- true
 	rf.electionTimer = time.Now()
+	rf.Debug(dCanidate, "Election Timeout for Server %d Term %d", rf.me, rf.currentTerm)
 }
 
 func (rf *Raft) StartElection() {
@@ -133,6 +133,7 @@ func (rf *Raft) StartElection() {
 	rf.votedFor = rf.me
 	rf.electionTimer = time.Now()
 	t := rf.currentTerm
+	rf.Debug(dFollower, "Starting Election for Server %d Term %d", rf.me, t)
 	go rf.election_handler(t)
 }
 

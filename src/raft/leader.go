@@ -24,13 +24,6 @@ func (rf *Raft) heartbeats() {
 }
 
 func (rf *Raft) sendHeartBeat(peer, term int) {
-	rf.mu.Lock()
-	if rf.currentTerm != term || !rf.isLeader {
-		rf.currentTerm = term
-		rf.mu.Unlock()
-		return
-	}
-	rf.mu.Unlock()
 	req := AppendRPCArgs{
 		Term: term,
 	}
@@ -38,19 +31,17 @@ func (rf *Raft) sendHeartBeat(peer, term int) {
 	rf.sendAppendRPC(peer, &req, &reply)
 
 	rf.mu.Lock()
-	if reply.Success {
+	if rf.currentTerm > term || !rf.isLeader {
+		rf.mu.Unlock()
+		return
+	} else if reply.Success {
 		rf.Debug(dLeader, "Append RPC successful on server %d by %d for term : %d", peer, rf.me, rf.currentTerm)
+	} else if reply.Term > term {
+		rf.isLeader = false
+		rf.currentTerm = reply.Term
+		rf.votedFor = -1
 	}
 
-	if reply.Term > term {
-		// convert to follower
-		if rf.isLeader && rf.currentTerm == term {
-			rf.isLeader = false
-			rf.currentTerm = reply.Term
-			rf.votedFor = -1
-			// rf.electionTimer = time.Now()
-		}
-	}
 	rf.mu.Unlock()
 
 }
