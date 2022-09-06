@@ -25,10 +25,11 @@ func (rf *Raft) ticker() {
 				rf.election_started.Set(false)
 				rf.votedFor = -1
 				rf.stop_election <- true
+				rf.electionTimer = time.Now()
 				rf.Debug(dCanidate, "Election Timeout for Server %d Term %d", rf.me, rf.currentTerm)
 			} else {
 				rf.election_started.Set(true)
-				rf.currentTerm = rf.currentTerm + 1
+				rf.currentTerm += 1
 				rf.votedFor = rf.me
 				rf.electionTimer = time.Now()
 				go rf.startElection()
@@ -42,7 +43,7 @@ func (rf *Raft) ticker() {
 		// if time greater than a fixed period , start election
 		// else sleep for a random time
 		// and try again
-		time.Sleep(time.Millisecond * time.Duration(RandIntUtil()))
+		time.Sleep(30 * time.Millisecond)
 
 	}
 }
@@ -75,15 +76,20 @@ func (rf *Raft) startElection() {
 			v := atomic.LoadInt32(&votes)
 			if v >= majority {
 				// election won , stop other seeking
-				rf.mu.Lock()
-				rf.isLeader = true
-				for i := 0; i < len(rf.peers); i += 1 {
-					if i != rf.me {
-						go rf.sendHeartBeat(i, rf.currentTerm)
+				if rf.election_started.Get() {
+					rf.mu.Lock()
+					rf.isLeader = true
+					for i := 0; i < len(rf.peers); i += 1 {
+						stop_seeking <- true
 					}
+					for i := 0; i < len(rf.peers); i += 1 {
+						if i != rf.me {
+							go rf.sendHeartBeat(i, rf.currentTerm)
+						}
+					}
+					rf.Debug(dLeader, "Election won sending heartbeats Server %d Term %d", rf.me, rf.currentTerm)
+					rf.mu.Unlock()
 				}
-				rf.Debug(dLeader, "Election won sending heartbeats Server %d Term %d", rf.me, rf.currentTerm)
-				rf.mu.Unlock()
 				return
 			}
 		}
@@ -103,10 +109,21 @@ func (rf *Raft) seekVote(vote_counter *int32, server_id int, term int, me int, s
 		default:
 			res := RequestVoteReply{}
 			if rf.sendRequestVote(server_id, &req, &res) {
-				if res.VoteGranted {
+				rf.mu.Lock()
+				if rf.currentTerm == res.Term && res.VoteGranted {
 					atomic.AddInt32(vote_counter, 1)
+					rf.mu.Unlock()
+					return
+				} else if res.Term > rf.currentTerm {
+					rf.stop_election <- true
+					rf.election_started.Set(false)
+					rf.electionTimer = time.Now()
+					rf.votedFor = -1
+					rf.currentTerm = res.Term
+					rf.mu.Unlock()
 					return
 				}
+				rf.mu.Unlock()
 			}
 		}
 	}

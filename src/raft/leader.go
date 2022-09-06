@@ -28,4 +28,21 @@ func (rf *Raft) sendHeartBeat(peer, term int) {
 	}
 	reply := AppendRPCReply{}
 	rf.sendAppendRPC(peer, &req, &reply)
+
+	if reply.Success {
+		rf.Debug(dLeader, "Append RPC successful on server %d by %d", peer, rf.me)
+	}
+
+	if reply.Term > term {
+		// convert to follower
+		rf.mu.Lock()
+		if rf.isLeader && rf.currentTerm == term {
+			rf.isLeader = false
+			rf.currentTerm = reply.Term
+			rf.votedFor = -1
+			rf.electionTimer = time.Now()
+		}
+		rf.mu.Unlock()
+
+	}
 }

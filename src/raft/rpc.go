@@ -10,24 +10,33 @@ func (rf *Raft) RequestVote(args *RequestVoteArgs, reply *RequestVoteReply) {
 	if args.Term < rf.currentTerm {
 		reply.Term = rf.currentTerm
 		reply.VoteGranted = false
-	} else if args.Term == rf.currentTerm && rf.votedFor == -1 && !rf.isLeader {
-		rf.votedFor = args.CandidateId
+	} else if rf.votedFor == -1 || rf.votedFor == args.CandidateId {
 		reply.VoteGranted = true
-		rf.electionTimer = time.Now()
-	} else if args.Term > rf.currentTerm {
-		if rf.election_started.Get() {
-			// if election going on stop it
-			rf.stop_election <- true
-			rf.election_started.Set(false)
-		} else if rf.isLeader {
-			rf.isLeader = false
-		}
-		rf.currentTerm = args.Term
 		rf.votedFor = args.CandidateId
-		reply.VoteGranted = true
 		rf.electionTimer = time.Now()
+		reply.Term = rf.currentTerm
+		rf.Debug(dFollower, "voted for %d for term %d", args.CandidateId, args.Term)
 	} else {
 		reply.VoteGranted = false
+	}
+
+	if args.Term > rf.currentTerm {
+		// become follower : either stop election or step down as leader
+		t := rf.currentTerm
+		rf.currentTerm = args.Term
+		if rf.election_started.Get() {
+			rf.stop_election <- true
+			rf.election_started.Set(false)
+			rf.votedFor = -1
+			rf.Debug(dCanidate, "Stopping Election Server %d since term is lower New Term %d Old Term %d", rf.me, rf.currentTerm, t)
+		} else if rf.isLeader {
+			rf.isLeader = false
+			rf.votedFor = -1
+			rf.Debug(dLeader, "Stepping Down as leader %d new term:  %d old term: %d", rf.me, rf.currentTerm, t)
+		}
+		reply.Term = rf.currentTerm
+		rf.electionTimer = time.Now()
+
 	}
 	rf.mu.Unlock()
 }
@@ -37,23 +46,35 @@ func (rf *Raft) AppendRPC(args *AppendRPCArgs, reply *AppendRPCReply) {
 	if args.Term < rf.currentTerm {
 		reply.Success = false
 		reply.Term = rf.currentTerm
-	} else if args.Term >= rf.currentTerm {
-		// if candidate -> follower
+	} else {
+		reply.Success = true
+		reply.Term = rf.currentTerm
+		rf.electionTimer = time.Now()
 		if rf.election_started.Get() {
-			rf.Debug(dCanidate, "Stopping Election Term %d Server %d", rf.currentTerm, rf.me)
-			rf.votedFor = -1
 			rf.stop_election <- true
 			rf.election_started.Set(false)
-			reply.Success = true
-		} else if rf.isLeader {
-			rf.isLeader = false
+			rf.electionTimer = time.Now()
 			rf.votedFor = -1
-			reply.Success = true
-		} else {
-			reply.Success = true
+		}
+	}
+
+	if args.Term > rf.currentTerm {
+		// become follower : either stop election or step down as leader
+		t := rf.currentTerm
+		rf.currentTerm = args.Term
+		if rf.election_started.Get() {
+			rf.stop_election <- true
+			rf.election_started.Set(false)
+			rf.votedFor = -1
+			rf.Debug(dCanidate, "Stopping Election Server %d since term is lower New Term %d Old Term %d", rf.me, rf.currentTerm, t)
+		} else if rf.isLeader {
+			rf.votedFor = -1
+			rf.isLeader = false
+			rf.Debug(dLeader, "Stepping Down as leader %d new term:  %d old term: %d", rf.me, rf.currentTerm, t)
 		}
 		rf.electionTimer = time.Now()
 	}
+
 	rf.mu.Unlock()
 }
 
