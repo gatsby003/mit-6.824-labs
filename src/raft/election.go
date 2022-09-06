@@ -6,77 +6,49 @@ import (
 )
 
 func (rf *Raft) ticker() {
-	// election_started := false
-	// stop_election := make(chan bool, 10)
-	random_time := time.Millisecond * time.Duration(RandIntUtil())
-	rf.Debug(dCanidate, random_time.String())
 	for !rf.killed() {
-
-		// Your code here to check if a leader election should
-		// be started and to randomize sleeping time using
-		// time.Sleep().
 		rf.mu.Lock()
-
-		if !rf.isLeader && time.Since(rf.electionTimer).Milliseconds() > random_time.Milliseconds() {
-			// timeout period passed
-			// start election
-			if rf.election_started.Get() {
-				// election_started = false
-				rf.election_started.Set(false)
-				rf.votedFor = -1
-				rf.stop_election <- true
-				rf.electionTimer = time.Now()
-				rf.Debug(dCanidate, "Election Timeout for Server %d Term %d", rf.me, rf.currentTerm)
-			} else {
-				rf.election_started.Set(true)
-				rf.currentTerm += 1
-				rf.votedFor = rf.me
-				rf.electionTimer = time.Now()
-				go rf.startElection()
-				rf.Debug(dFollower, "Starting Election for Server %d Term %d", rf.me, rf.currentTerm)
-
-			}
-
+		if !rf.isLeader && rf.election_timeout() {
+			rf.handle_timeout()
 		}
 		rf.mu.Unlock()
-
-		// if time greater than a fixed period , start election
-		// else sleep for a random time
-		// and try again
-		time.Sleep(30 * time.Millisecond)
-
+		time.Sleep(100 * time.Millisecond)
 	}
 }
 
-func (rf *Raft) startElection() {
+func (rf *Raft) election_handler(term int) {
 	var votes int32
-	stop_seeking := make(chan bool, 10)
-	votes += 1
-
-	rf.mu.Lock()
-	for i := 0; i < len(rf.peers); i += 1 {
-		if i != rf.me {
-			go rf.seekVote(&votes, i, rf.currentTerm, rf.me, stop_seeking)
-		}
-	}
 
 	majority := int32(len(rf.peers)/2 + 1)
+	stop_seeking := make(chan bool, 10)
+
+	atomic.AddInt32(&votes, 1)
+
+	rf.mu.Lock()
+	if term != rf.currentTerm || !rf.election_started.Get() {
+		rf.mu.Unlock()
+		return
+	}
+
+	rf.initiate_seekers(&votes, stop_seeking)
 
 	rf.mu.Unlock()
 
+	rf.watch_majority(stop_seeking, &votes, majority, term)
+}
+
+func (rf *Raft) watch_majority(stop_seeking chan bool, votes *int32, majority int32, term int) {
 	for {
 		select {
 		case <-rf.stop_election:
 			// stop election
-			for i := 0; i < len(rf.peers); i += 1 {
-				stop_seeking <- true
-			}
+			rf.stop_seekers(stop_seeking)
 			return
 		default:
-			v := atomic.LoadInt32(&votes)
+			v := atomic.LoadInt32(votes)
 			if v >= majority {
 				// election won , stop other seeking
-				if rf.election_started.Get() {
+				if term == rf.currentTerm && rf.election_started.Get() {
 					rf.mu.Lock()
 					rf.isLeader = true
 					for i := 0; i < len(rf.peers); i += 1 {
@@ -89,6 +61,8 @@ func (rf *Raft) startElection() {
 					}
 					rf.Debug(dLeader, "Election won sending heartbeats Server %d Term %d", rf.me, rf.currentTerm)
 					rf.mu.Unlock()
+				} else {
+					rf.Debug(dCanidate, "Edge Case")
 				}
 				return
 			}
@@ -110,21 +84,64 @@ func (rf *Raft) seekVote(vote_counter *int32, server_id int, term int, me int, s
 			res := RequestVoteReply{}
 			if rf.sendRequestVote(server_id, &req, &res) {
 				rf.mu.Lock()
-				if rf.currentTerm == res.Term && res.VoteGranted {
+				if rf.election_started.Get() && rf.currentTerm == res.Term && res.VoteGranted {
 					atomic.AddInt32(vote_counter, 1)
 					rf.mu.Unlock()
 					return
 				} else if res.Term > rf.currentTerm {
-					rf.stop_election <- true
-					rf.election_started.Set(false)
-					rf.electionTimer = time.Now()
-					rf.votedFor = -1
+					rf.StopElection()
 					rf.currentTerm = res.Term
 					rf.mu.Unlock()
 					return
 				}
 				rf.mu.Unlock()
 			}
+		}
+	}
+}
+
+func (rf *Raft) election_timeout() bool {
+	return time.Since(rf.electionTimer).Milliseconds() > rf.timeout.Milliseconds()
+}
+
+func (rf *Raft) handle_timeout() {
+	if rf.election_started.Get() {
+		// election_started = false
+		rf.StopElection()
+		rf.Debug(dCanidate, "Election Timeout for Server %d Term %d", rf.me, rf.currentTerm)
+	} else {
+		rf.StartElection()
+		rf.Debug(dFollower, "Starting Election for Server %d Term %d", rf.me, rf.currentTerm)
+	}
+}
+
+func (rf *Raft) StopElection() {
+	rf.election_started.Set(false)
+	rf.votedFor = -1
+	rf.stop_election <- true
+	rf.electionTimer = time.Now()
+}
+
+func (rf *Raft) StartElection() {
+	rf.Debug(dCanidate, "Starting Election for term %d", rf.currentTerm)
+	rf.election_started.Set(true)
+	rf.currentTerm += 1
+	rf.votedFor = rf.me
+	rf.electionTimer = time.Now()
+	t := rf.currentTerm
+	go rf.election_handler(t)
+}
+
+func (rf *Raft) stop_seekers(stop_seeking chan bool) {
+	for i := 0; i < len(rf.peers); i += 1 {
+		stop_seeking <- true
+	}
+}
+
+func (rf *Raft) initiate_seekers(votes *int32, stop_seeking chan bool) {
+	for i := 0; i < len(rf.peers); i += 1 {
+		if i != rf.me {
+			go rf.seekVote(votes, i, rf.currentTerm, rf.me, stop_seeking)
 		}
 	}
 }

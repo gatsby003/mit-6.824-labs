@@ -69,6 +69,8 @@ type Raft struct {
 	election_started *TAtomBool
 	stop_election    chan bool
 
+	timeout time.Duration
+
 	start_since time.Time
 	debug       bool
 

@@ -34,6 +34,8 @@ func Make(peers []*labrpc.ClientEnd, me int,
 
 	rf.debug = true
 
+	rf.timeout = time.Millisecond * time.Duration(RandIntUtil())
+
 	// initialize from state persisted before a crash
 	rf.readPersist(persister.ReadRaftState())
 
