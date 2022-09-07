@@ -112,7 +112,6 @@ func TestManyElections2A(t *testing.T) {
 
 	iters := 10
 	for ii := 1; ii < iters; ii++ {
-		fmt.Printf("MULTIPLE TESTS ITER %d", ii)
 		// disconnect three nodes
 		i1 := rand.Int() % servers
 		i2 := rand.Int() % servers
@@ -130,8 +129,9 @@ func TestManyElections2A(t *testing.T) {
 		cfg.connect(i1)
 		cfg.connect(i2)
 		cfg.connect(i3)
+		fmt.Printf("MULTIPLE TESTS ITER %d", ii)
 	}
-
+	fmt.Printf("LAST CHECK")
 	cfg.checkOneLeader()
 
 	cfg.end()

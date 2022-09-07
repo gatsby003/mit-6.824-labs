@@ -34,9 +34,9 @@ func (rf *Raft) sendHeartBeat(peer, term int) {
 	if rf.currentTerm > term || !rf.isLeader {
 		rf.mu.Unlock()
 		return
-	} else if reply.Success {
+	} else if reply.Success && reply.Term == rf.currentTerm {
 		rf.Debug(dLeader, "Append RPC successful on server %d by %d for term : %d", peer, rf.me, rf.currentTerm)
-	} else if reply.Term > term {
+	} else if reply.Term > rf.currentTerm {
 		rf.isLeader = false
 		rf.currentTerm = reply.Term
 		rf.votedFor = -1

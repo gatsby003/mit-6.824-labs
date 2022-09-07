@@ -1,6 +1,7 @@
 package raft
 
 import (
+	"fmt"
 	"time"
 )
 
@@ -17,7 +18,7 @@ func (rf *Raft) RequestVote(args *RequestVoteArgs, reply *RequestVoteReply) {
 		}
 		if rf.isLeader {
 			rf.isLeader = false
-			rf.Debug(dLeader, "Stepping Down as leader %d new term:  %d old term: %d", rf.me, rf.currentTerm, t)
+			rf.Debug(dLeader, "RQV : Stepping Down as leader %d new term:  %d old term: %d", rf.me, rf.currentTerm, t)
 		}
 
 		// vote for the guy !!
@@ -40,7 +41,7 @@ func (rf *Raft) RequestVote(args *RequestVoteArgs, reply *RequestVoteReply) {
 		reply.Term = args.Term
 		rf.Debug(dFollower, "server %d voted for %d for term %d", rf.me, args.CandidateId, args.Term)
 	} else {
-		rf.Debug(dVote, "Not Voted voted for : %d, term : %d, argTerm : %d asked by %d", rf.me, rf.currentTerm, args.Term, args.CandidateId)
+		rf.Debug(dVote, "Not Voted voted for : %d, term : %d, argTerm : %d asked to %d", args.CandidateId, rf.currentTerm, args.Term, rf.me)
 		reply.VoteGranted = false
 	}
 
@@ -57,11 +58,11 @@ func (rf *Raft) AppendRPC(args *AppendRPCArgs, reply *AppendRPCReply) {
 		if rf.election_started.Get() {
 			rf.StopElection()
 			rf.Debug(dCanidate, "APRPC Stopping Election Server %d since term is lower New Term %d Old Term %d", rf.me, rf.currentTerm, t)
-		} else if rf.isLeader {
+		}
+		if rf.isLeader {
 			rf.votedFor = -1
 			rf.isLeader = false
-			rf.electionTimer = time.Now()
-			rf.Debug(dLeader, "Stepping Down as leader %d new term:  %d old term: %d", rf.me, rf.currentTerm, t)
+			rf.Debug(dLeader, "APRPC :Stepping Down as leader %d new term:  %d old term: %d", rf.me, rf.currentTerm, t)
 		}
 	} else if args.Term < rf.currentTerm {
 		reply.Success = false
@@ -73,6 +74,7 @@ func (rf *Raft) AppendRPC(args *AppendRPCArgs, reply *AppendRPCReply) {
 		if rf.election_started.Get() {
 			rf.StopElection()
 		}
+		fmt.Println(".......")
 	}
 
 	rf.mu.Unlock()

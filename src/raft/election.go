@@ -12,7 +12,7 @@ func (rf *Raft) ticker() {
 			rf.handle_timeout()
 		}
 		rf.mu.Unlock()
-		time.Sleep(time.Millisecond * time.Duration(RandIntUtil()))
+		time.Sleep(rf.timeout)
 	}
 }
 
@@ -26,6 +26,7 @@ func (rf *Raft) election_handler(term int) {
 
 	rf.mu.Lock()
 	if term != rf.currentTerm || !rf.election_started.Get() {
+		rf.Debug(dCanidate, "QUITTING")
 		rf.mu.Unlock()
 		return
 	}
@@ -79,6 +80,7 @@ func (rf *Raft) seekVote(vote_counter *int32, server_id int, term int, me int, s
 	for {
 		select {
 		case <-stop_seeking:
+			rf.Debug(dCanidate, "Stopping seeking for term %d server %d", term, rf.me)
 			return
 		default:
 			res := RequestVoteReply{}
@@ -92,12 +94,13 @@ func (rf *Raft) seekVote(vote_counter *int32, server_id int, term int, me int, s
 					rf.mu.Unlock()
 					return
 				} else if !res.VoteGranted && res.Term > rf.currentTerm {
+					rf.Debug(dCanidate, "QUITTING2")
 					rf.StopElection()
 					rf.currentTerm = res.Term
 					rf.mu.Unlock()
 					return
 				} else {
-					rf.Debug(dVote, "Didnt get vote : %d", res.VoteGranted)
+					rf.Debug(dVote, "Didnt get vote : %d %d", res.VoteGranted, res.Term)
 					rf.mu.Unlock()
 					return
 				}
@@ -107,7 +110,7 @@ func (rf *Raft) seekVote(vote_counter *int32, server_id int, term int, me int, s
 }
 
 func (rf *Raft) election_timeout() bool {
-	return time.Since(rf.electionTimer).Milliseconds() > rf.timeout.Milliseconds()
+	return time.Since(rf.electionTimer).Milliseconds() >= rf.timeout.Milliseconds()
 }
 
 func (rf *Raft) handle_timeout() {
@@ -124,7 +127,7 @@ func (rf *Raft) StopElection() {
 	rf.votedFor = -1
 	rf.stop_election <- true
 	rf.electionTimer = time.Now()
-	rf.Debug(dCanidate, "Election Timeout for Server %d Term %d", rf.me, rf.currentTerm)
+	rf.Debug(dCanidate, "Election Timeout for Server %d Term %d , buffer : %d", rf.me, rf.currentTerm, len(rf.stop_election))
 }
 
 func (rf *Raft) StartElection() {

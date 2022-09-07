@@ -28,7 +28,7 @@ func Make(peers []*labrpc.ClientEnd, me int,
 	rf.votedFor = -1
 
 	rf.election_started = &TAtomBool{}
-	rf.stop_election = make(chan bool, 10)
+	rf.stop_election = make(chan bool, 1)
 
 	rf.start_since = time.Now()
 
