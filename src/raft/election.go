@@ -12,7 +12,7 @@ func (rf *Raft) ticker() {
 			rf.handle_timeout()
 		}
 		rf.mu.Unlock()
-		time.Sleep(rf.timeout)
+		time.Sleep(time.Millisecond * time.Duration(RandIntUtil()))
 	}
 }
 
@@ -43,6 +43,7 @@ func (rf *Raft) watch_majority(stop_seeking chan bool, votes *int32, majority in
 		select {
 		case <-rf.stop_election:
 			// stop election
+			rf.Debug(dCanidate, "Stopping Election on Server %d for term %d", rf.me, term)
 			rf.stop_seekers(stop_seeking)
 			return
 		default:
@@ -137,6 +138,7 @@ func (rf *Raft) StartElection() {
 	rf.electionTimer = time.Now()
 	t := rf.currentTerm
 	rf.Debug(dFollower, "Starting Election for Server %d Term %d", rf.me, t)
+	rf.stop_election = make(chan bool, 1)
 	go rf.election_handler(t)
 }
 
